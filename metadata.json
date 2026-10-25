@@ -1,0 +1,6 @@
+{
+  "name": "Đại Hải Trình - Presentation Game",
+  "description": "Tựa game thuyết trình tương tác 'Đại Hải Trình' dành cho 5 đội chơi với bản đồ hải trình cổ, ngân hàng câu hỏi triết học và cơ chế bốc bài Tarot.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

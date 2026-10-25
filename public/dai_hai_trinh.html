@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ĐẠI HẢI TRÌNH - Game Thuyết Trình Hải Trình & Triết Học</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .parchment {
+      background-color: #fcf8ee;
+      background-image: radial-gradient(#d4af37 0.75px, transparent 0.75px), radial-gradient(#d4af37 0.75px, #fcf8ee 0.75px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+    /* Custom thin scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(180, 83, 9, 0.5); border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-stone-950 text-stone-100 antialiased selection:bg-amber-500 selection:text-white h-screen overflow-hidden">
+  <div id="app" class="h-screen w-full flex flex-col justify-between overflow-hidden"></div>
+
+  <script>
+    const questions = [{"id":1,"question":"Giai đoạn Nhận thức cảm tính bao gồm các hình thức cơ bản nào theo thứ tự phát triển?","options":["A. Cảm giác, Tri giác và Biểu tượng","B. Khái niệm, Phán đoán và Suy lý","C. Cảm giác, Phán đoán và Thực tiễn","D. Khái niệm, Tri giác và Chân lý"],"correct":0,"explain":"Nhận thức cảm tính gồm 3 hình thức: Cảm giác (phản ánh từng thuộc tính riêng lẻ bề ngoài), Tri giác (tổng hợp các cảm giác thành hình ảnh toàn vẹn) và Biểu tượng (tái hiện hình ảnh sự vật trong óc)."},{"id":2,"question":"Công nghệ Deepfake hoạt động dựa trên mô hình trí tuệ nhân tạo GAN (Generative Adversarial Networks), bao gồm hai bộ phận chính hoạt động như một cuộc đấu trí là gì?","options":["A. Bộ nhận diện khuôn mặt và Bộ mã hóa âm thanh","B. Bộ tạo dữ liệu (Generator) và Bộ phân biệt (Discriminator)","C. Bộ lọc sinh học và Bộ xử lý ngôn ngữ","D. Bộ phân tích hình ảnh và Bộ quét mã độc"],"correct":1,"explain":"Mô hình GAN bao gồm Bộ tạo dữ liệu (Generator - tạo phiên bản giả mạo) và Bộ phân biệt (Discriminator - kiểm tra sản phẩm thật hay giả), liên tục học lẫn nhau qua hàng triệu dữ liệu."},{"id":3,"question":"Theo Lý luận nhận thức Mác - Lênin, yếu tố nào vừa là cơ sở, động lực, mục đích của nhận thức, vừa là tiêu chuẩn duy nhất để kiểm nghiệm chân lý?","options":["A. Nhận thức cảm tính","B. Tư duy trừu tượng","C. Thực tiễn","D. Công nghệ AI"],"correct":2,"explain":"Thực tiễn cung cấp tài liệu, thúc đẩy nhận thức phát triển và là thước đo duy nhất kiểm tra tri thức đúng hay sai."},{"id":4,"question":"Phát biểu: 'Tri giác là hình thức nhận thức chỉ phản ánh từng thuộc tính riêng lẻ, bề ngoài của sự vật khi nó tác động trực tiếp lên giác quan.'","options":["ĐÚNG","SAI"],"correct":1,"explain":"Phản ánh từng thuộc tính riêng lẻ là Cảm giác; còn Tri giác là hình ảnh toàn vẹn về sự vật do tổng hợp nhiều cảm giác tạo nên."},{"id":5,"question":"Phát biểu: 'Deepfake trở thành công cụ lừa đảo nguy hiểm vì nó đánh trực tiếp vào bản năng tin tưởng tuyệt đối của bộ não con người đối với các giác quan Mắt thấy, tai nghe.'","options":["ĐÚNG","SAI"],"correct":0,"explain":"Suốt hàng vạn năm tiến hóa, bộ não con người được lập trình để mặc định những gì trực tiếp nhìn thấy và nghe thấy là bằng chứng xác thực nhất, và Deepfake đã lợi dụng chính điểm này để bẻ gãy bộ lọc niềm tin."},{"id":6,"question":"Gợi ý của MC: 'Cụm từ gồm 4 từ (15 chữ cái): Đây là giai đoạn nhận thức mở đầu giúp con người thu nhận thông tin qua giác quan, nhưng nếu chỉ dừng ở đây thì rất dễ sập bẫy công nghệ!'","correct_text":"NHẬN THỨC CẢM TÍNH","explain":"Nhận thức cảm tính phản ánh vẻ bề ngoài qua mắt thấy tai nghe nên không tự xác nhận được video có bị AI giả mạo hay không."},{"id":7,"question":"⚙️ (Bánh răng sản xuất) + 🥾 (Đôi giày thực địa) + 📞 (Gọi điện xác minh trực tiếp)\nGợi ý của MC: 'Từ khóa gồm 2 từ (8 chữ cái): Toàn bộ hoạt động vật chất có mục đích của con người, giữ vai trò làm thước đo kiểm tra xem thông tin là thật hay giả!'","correct_text":"THỰC TIỄN","explain":"Muốn giải mã Deepfake phải đưa vào kiểm nghiệm thực tiễn (như gọi điện thoại trực tiếp qua kênh chính thức hoặc đối soát quy trình tài chính)."},{"id":8,"question":"Hãy ghép các từ cho sẵn dưới đây vào vị trí thích hợp để hoàn thành khái niệm Chân lý:\nKho từ gợi ý: [thực tiễn] | [khách quan] | [phù hợp] | [tri thức]\n'Chân lý là những (1)_______ của con người có nội dung (2)_______ với hiện thực (3)_______, và sự phù hợp đó đã được (4)_______ kiểm nghiệm và chứng minh.'","correct_text":"(1) tri thức - (2) phù hợp - (3) khách quan - (4) thực tiễn","explain":"Thứ tự điền đúng: (1) tri thức, (2) phù hợp, (3) khách quan, (4) thực tiễn."},{"id":9,"question":"Hãy ghép các từ cho sẵn dưới đây vào vị trí thích hợp để hoàn thành định nghĩa Nhận thức lý tính:\nKho từ gợi ý: [trừu tượng] | [bản chất] | [khái quát] | [gián tiếp]\n'Nhận thức lý tính là giai đoạn cao hơn của quá trình nhận thức. Con người sử dụng tư duy (1)_______ để phản ánh (2)_______, (3)_______ và sâu sắc (4)_______, quy luật của sự vật.'","correct_text":"(1) trừu tượng - (2) gián tiếp - (3) khái quát - (4) bản chất","explain":"Thứ tự điền đúng: (1) trừu tượng, (2) gián tiếp, (3) khái quát, (4) bản chất."},{"id":10,"question":"Trong điều kiện tự nhiên, khi không có công nghệ can thiệp, bộ não con người có thể tự làm sai lệch ký ức và diễn giải sai những gì mắt thấy, tai nghe không?","options":["A. Không, vì não bộ luôn ghi nhớ chính xác mọi thông tin từ giác quan.","B. Có, vì não bộ có thể tự lấp đầy khoảng trống thông tin bằng ký ức và kinh nghiệm quá khứ, dẫn đến nhận thức sai lệch về thực tại","C. Không, vì chỉ có AI mới có thể làm sai lệch ký ức của con người.","D. Có, nhưng chỉ khi con người mắc bệnh tâm lý nghiêm trọng."],"correct":1,"explain":"Ký ức không hoạt động như một chiếc camera ghi lại mọi thứ chính xác. Não bộ thường ghép nối ký ức cũ để lấp đầy khoảng trống thông tin (Ký ức giả & Định kiến xác nhận)."},{"id":11,"question":"Một sinh viên xem video Deepfake về giảng viên của mình và lập tức chia sẻ vì video trông rất chân thực. Sai lầm chủ yếu của sinh viên là gì?","options":["A. Sử dụng mạng xã hội để tiếp nhận thông tin.","B. Đồng nhất vẻ ngoài có tính thuyết phục với bản chất của sự việc khi chưa có đủ căn cứ.","C. Tin rằng công nghệ AI có thể tạo ra hình ảnh chân thực.","D. Sử dụng điện thoại để xem video."],"correct":1,"explain":"Hình ảnh chân thực chưa đủ chứng minh sự việc đã xảy ra. Sinh viên đã vội vàng đưa ra kết luận khi chưa phân tích đầy đủ thông tin và bằng chứng liên quan."},{"id":12,"question":"Hai người xem cùng một video Deepfake nhưng đưa ra hai kết luận khác nhau do có kiến thức và kinh nghiệm khác nhau. Tình huống này cho thấy điều gì?","options":["A. Cùng một thông tin thì mọi người luôn có nhận thức giống nhau.","B. Nhận thức của con người có thể chịu ảnh hưởng của vốn hiểu biết và kinh nghiệm đã tích lũy.","C. Người có nhiều kinh nghiệm luôn đưa ra kết luận chính xác.","D. Mọi kết luận khác nhau đều không có giá trị."],"correct":1,"explain":"Kiến thức và kinh nghiệm ảnh hưởng đến cách con người tiếp nhận, phân tích và đánh giá thông tin."},{"id":13,"question":"“Khi một video Deepfake được phát hiện là giả, toàn bộ thông tin mà người xem thu nhận từ video đó đều vô giá trị đối với nhận thức.”","options":["ĐÚNG","SAI"],"correct":1,"explain":"SAI. Cần phân biệt giữa việc video không phản ánh đúng sự kiện được mô tả và việc mọi thông tin liên quan đều vô giá trị. Video có thể cung cấp manh mối về cách thức lừa đảo, nguồn phát tán."},{"id":14,"question":"Hoàn thiện lập luận - Kho từ: [tiền đề] – [logic] – [hiện thực khách quan] – [chân lý]\n‘Một kết luận được suy ra bằng lập luận (1) ________ chưa chắc đã là (2) ________ nếu (3) ________ của lập luận không phù hợp với (4) ________.’","correct_text":"(1) logic - (2) chân lý - (3) tiền đề - (4) hiện thực khách quan","explain":"Lập luận hợp logic chỉ bảo đảm kết luận được suy ra đúng từ tiền đề theo quy tắc suy luận. Nếu tiền đề sai, kết luận vẫn có thể sai."},{"id":15,"question":"Nhận thức và sự điều chỉnh tri thức - Kho từ: [tương đối] – [tuyệt đối] – [bổ sung] – [phát triển]\n‘Trong quá trình nhận thức, tri thức của con người vừa mang tính (1) ________ trong những điều kiện lịch sử cụ thể, vừa có thể tiến gần đến chân lý (2) ________. Khi thực tiễn xuất hiện những dữ kiện mới, tri thức cần được (3) ________ và (4) ________.’","correct_text":"(1) tương đối - (2) tuyệt đối - (3) bổ sung - (4) phát triển","explain":"Nhận thức có giới hạn lịch sử nhưng vẫn tiến sâu vào hiện thực. Khi có bằng chứng mới, tri thức được bổ sung và phát triển."},{"id":16,"question":"Một người phân tích video Deepfake rất logic nhưng vẫn kết luận sai vì toàn bộ dữ liệu ban đầu đều đã bị làm giả. Nguyên nhân trực tiếp dẫn đến sai lầm là gì?","options":["A. Quá trình suy luận logic luôn dẫn đến nhận thức sai lệch.","B. Nhận thức lý tính hoàn toàn tách rời nhận thức cảm tính.","C. Tiền đề sai lệch có thể dẫn đến kết luận sai dù quá trình suy luận hợp logic.","D. Chân lý được xác định dựa trên mức độ đồng thuận của số đông."],"correct":2,"explain":"Một lập luận hợp logic chưa chắc tạo ra kết luận đúng nếu các tiền đề không phản ánh chính xác hiện thực."},{"id":17,"question":"Gợi ý của MC: 'Hai từ chỉ những căn cứ được dùng để xác nhận hoặc bác bỏ một nhận định.'","correct_text":"BẰNG CHỨNG","explain":"Chốt kiến thức: Khi đánh giá video, cần tìm dữ liệu gốc, nguồn đăng tải và những thông tin độc lập có thể đối chiếu."},{"id":18,"question":"Một nhân viên phát hiện video giám đốc có dấu hiệu bất thường, suy luận là Deepfake, sau đó gọi vào số điện thoại đã lưu từ trước và đối chiếu với kế toán trưởng để xác minh lệnh chuyển tiền. Hành động nào thể hiện rõ nhất vai trò của thực tiễn?","options":["A. Nhận diện khuôn mặt và giọng nói của giám đốc qua video.","B. Phát hiện khẩu hình không khớp với âm thanh và hình thành nghi vấn.","C. Sử dụng kênh liên lạc độc lập và đối chiếu quy trình tài chính để xác minh tính xác thực của lệnh chuyển tiền.","D. Vận dụng kiến thức về công nghệ AI để giải thích cách video có thể bị làm giả."],"correct":2,"explain":"Đáp án C thể hiện trực tiếp vai trò kiểm nghiệm qua hoạt động thực tiễn."},{"id":19,"question":"Trong mô hình GAN, Generator liên tục tạo ra video giả chân thực, còn Discriminator ngày càng khó phân biệt. Xét dưới góc độ nhận thức luận, cách giải thích nào phù hợp nhất?","options":["A. Generator và Discriminator mô phỏng trực tiếp hai giai đoạn nhận thức cảm tính và lý tính.","B. Sự hoàn thiện của video giả chứng minh ranh giới giữa hiện thực khách quan và nhận thức chủ quan đã bị xóa bỏ.","C. Khi Discriminator không phát hiện được lỗi, video giả mặc nhiên trở thành chân lý.","D. GAN cho thấy độ chân thực của biểu hiện cảm tính không bảo đảm tính xác thực của đối tượng, do đó cần phương pháp kiểm chứng độc lập."],"correct":3,"explain":"Đáp án D: Độ chân thực cảm tính bề ngoài không bảo đảm tính xác thực, cần kiểm chứng độc lập."},{"id":20,"question":"Giới hạn của nhận thức cảm tính: 'Khi một video Deepfake có hình ảnh và âm thanh hoàn toàn chân thực, nhận thức cảm tính của con người phản ánh đúng hiện thực khách quan, vì cảm giác và tri giác đều được hình thành từ những kích thích có thật.'","options":["ĐÚNG","SAI"],"correct":1,"explain":"SAI. Kích thích có thật nhưng nội dung tạo ra không tương ứng sự kiện ngoài đời. Nhận thức cảm tính chỉ phản ánh thuộc tính bề ngoài."}];
+    const allTarotCards = [{"id":1,"title":"Tiến 2 bước","actionType":"advance_2","themeColor":"from-amber-600 to-yellow-500","iconName":"fa-solid fa-angles-right"},{"id":2,"title":"Tiến 1 bước","actionType":"advance_1","themeColor":"from-emerald-600 to-teal-500","iconName":"fa-solid fa-angle-right"},{"id":3,"title":"Đứng im","actionType":"stay","themeColor":"from-slate-600 to-zinc-500","iconName":"fa-solid fa-anchor"},{"id":4,"title":"Lùi 2 bước","actionType":"retreat_2","themeColor":"from-rose-700 to-red-500","iconName":"fa-solid fa-angles-left"},{"id":5,"title":"Lùi 1 bước","actionType":"retreat_1","themeColor":"from-orange-600 to-amber-500","iconName":"fa-solid fa-angle-left"},{"id":6,"title":"Đội trước đó tiến 1 bước","actionType":"prev_advance_1","themeColor":"from-cyan-600 to-blue-500","iconName":"fa-solid fa-handshake"},{"id":7,"title":"Tất cả về vị trí xuất phát","actionType":"reset_all","themeColor":"from-red-800 to-rose-900","iconName":"fa-solid fa-tornado"},{"id":8,"title":"Tấn công 1 đội bất kì (-2 bước đội bị chọn)","actionType":"attack_target","themeColor":"from-purple-700 to-indigo-800","iconName":"fa-solid fa-skull-crossbones"},{"id":9,"title":"Đội bét bảng được cộng 2 bước","actionType":"boost_last","themeColor":"from-lime-600 to-emerald-600","iconName":"fa-solid fa-life-ring"},{"id":10,"title":"Thử thách: Đọc nhanh không vấp: \"Luộc hột vịt lộn, luộc lộn hột vịt lạc, ăn lộn hột vịt lạc, luộc lại hột vịt lộn\"","actionType":"tongue_twister","themeColor":"from-fuchsia-700 to-pink-600","iconName":"fa-solid fa-feather-pointed"}];
+    const trackWaypoints = [[{"x":5,"y":16},{"x":14,"y":12},{"x":23,"y":19},{"x":33,"y":13},{"x":43,"y":20},{"x":53,"y":14},{"x":63,"y":21},{"x":72,"y":15},{"x":81,"y":21},{"x":89,"y":16},{"x":96,"y":18}],[{"x":5,"y":32},{"x":13,"y":36},{"x":22,"y":29},{"x":32,"y":35},{"x":42,"y":30},{"x":52,"y":37},{"x":62,"y":31},{"x":71,"y":37},{"x":80,"y":32},{"x":89,"y":36},{"x":96,"y":34}],[{"x":5,"y":50},{"x":14,"y":46},{"x":23,"y":53},{"x":33,"y":47},{"x":43,"y":54},{"x":53,"y":48},{"x":63,"y":55},{"x":72,"y":49},{"x":81,"y":54},{"x":89,"y":49},{"x":96,"y":51}],[{"x":5,"y":67},{"x":14,"y":72},{"x":23,"y":65},{"x":33,"y":71},{"x":42,"y":66},{"x":52,"y":72},{"x":62,"y":66},{"x":71,"y":72},{"x":81,"y":67},{"x":89,"y":71},{"x":96,"y":68}],[{"x":5,"y":84},{"x":13,"y":88},{"x":22,"y":81},{"x":32,"y":87},{"x":42,"y":82},{"x":52,"y":88},{"x":62,"y":83},{"x":72,"y":88},{"x":81,"y":83},{"x":89,"y":87},{"x":96,"y":85}]];
+    
+    // Synthesized Sound FX
+    const sounds = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) this.ctx = new AC();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      playChime() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.45);
+        });
+      },
+      playWrong() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      },
+      playShipBell() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [880, 1760].forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.25);
+        });
+      }
+    };
+
+    // Game state
+    let currentScreen = 'INTRO';
+    let teams = [
+      { id: 1, name: 'Hải Tặc Mũ Rơm', emoji: '🏴‍☠️', color: '#ef4444', position: 0, score: 0 },
+      { id: 2, name: 'Chiến Hạm Hoàng Gia', emoji: '🚢', color: '#3b82f6', position: 0, score: 0 },
+      { id: 3, name: 'Thủy Quái Kraken', emoji: '🐙', color: '#10b981', position: 0, score: 0 },
+      { id: 4, name: 'Mỏ Neo Vàng', emoji: '⚓', color: '#f59e0b', position: 0, score: 0 },
+      { id: 5, name: 'Vương Miện Hải Tặc', emoji: '👑', color: '#a855f7', position: 0, score: 0 }
+    ];
+    let activeTeamIndex = 0;
+    let currentQuestionIndex = 0;
+    let checkedAnswer = false;
+    let isCorrect = null;
+    let selectedOptionIndex = null;
+    let textAnswerInput = '';
+    let isTarotOpen = false;
+    let drawnCard = null;
+    let currentTarotDeck = [];
+    let hasResetAllOccurred = false;
+    let winner = null;
+    let attackVictimId = null;
+    let autoTimer = null;
+
+    // Tarot Card Progression Logic Engine
+    function getWeightedTarotDeck(qNum, hasReset) {
+      const c1 = allTarotCards.find(c => c.id === 1); // Tiến 2
+      const c2 = allTarotCards.find(c => c.id === 2); // Tiến 1
+      const c3 = allTarotCards.find(c => c.id === 3); // Đứng im
+      const c4 = allTarotCards.find(c => c.id === 4); // Lùi 2
+      const c5 = allTarotCards.find(c => c.id === 5); // Lùi 1
+      const c6 = allTarotCards.find(c => c.id === 6); // Đội trước tiến 1
+      const c7 = allTarotCards.find(c => c.id === 7); // Reset all
+      const c8 = allTarotCards.find(c => c.id === 8); // Tấn công (-2)
+      const c9 = allTarotCards.find(c => c.id === 9); // Bét bảng +2
+      const c10 = allTarotCards.find(c => c.id === 10); // Đọc líu lưỡi
+
+      let pool = [];
+      if (qNum <= 7) {
+        // Giai đoạn đầu (Câu 1-7): 80% Tiến 1 hoặc Tiến 2
+        pool = [c1, c1, c1, c1, c2, c2, c2, c2, c3, c6];
+      } else if (qNum >= 8 && qNum <= 14) {
+        // Giai đoạn giữa (Câu 8-14): Lùi, Đứng im, Thử thách. Lá 7 (Reset all) chỉ xuất hiện 1 lần duy nhất khoảng câu 9-12
+        const canIncludeReset = !hasReset && qNum >= 9 && qNum <= 12;
+        if (canIncludeReset) {
+          pool = [c7, c4, c5, c3, c10, c2, c1, c5, c3, c10];
+        } else {
+          pool = [c4, c5, c3, c10, c2, c1, c5, c3, c6, c10];
+        }
+      } else {
+        // Giai đoạn sau (Câu 15-20): Tấn công, Bét bảng +2, Lùi 2, Tiến 2
+        pool = [c8, c8, c9, c9, c4, c4, c1, c1, c2, c10];
+      }
+
+      // Fisher-Yates shuffle
+      const res = [...pool];
+      for (let i = res.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [res[i], res[j]] = [res[j], res[i]];
+      }
+      return res;
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      if (currentScreen === 'INTRO') {
+        app.innerHTML = renderIntro();
+      } else if (currentScreen === 'SETUP') {
+        app.innerHTML = renderSetup();
+      } else if (currentScreen === 'ARENA') {
+        app.innerHTML = renderArena();
+      }
+    }
+
+    function renderIntro() {
+      return `
+        <div class="h-screen w-full flex flex-col justify-between items-center text-center p-6 bg-stone-950 overflow-hidden">
+          <div class="my-auto max-w-3xl space-y-6">
+            <div class="w-24 h-24 mx-auto rounded-full border-2 border-amber-500 bg-amber-950/80 flex items-center justify-center text-5xl shadow-2xl animate-bounce">
+              🏴‍☠️
+            </div>
+            <p class="text-xs font-cinzel tracking-widest text-amber-400 font-bold uppercase">Game Thuyết Trình Tương Tác</p>
+            <h1 class="text-5xl sm:text-7xl font-black font-cinzel text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-600">
+              ĐẠI HẢI TRÌNH
+            </h1>
+            <p class="text-stone-300 text-sm sm:text-base max-w-xl mx-auto">
+              Chuyến hải trình tri thức 5 hạm đội: Khám phá Lý luận nhận thức và Nghệ thuật giải mã Deepfake với 20 câu hỏi triết học và 10 thẻ bài Tarot định mệnh.
+            </p>
+            <div>
+              <button onclick="sounds.playShipBell(); currentScreen = 'SETUP'; render();" class="px-8 py-4 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-stone-950 font-cinzel font-black text-lg rounded-xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+                BẮT ĐẦU HẢI TRÌNH
+              </button>
+            </div>
+          </div>
+          <div class="py-2 text-[11px] text-amber-400/60">Đại Hải Trình · Single-Viewport No-Scroll Edition</div>
+        </div>
+      `;
+    }
+
+    function renderSetup() {
+      return `
+        <div class="h-screen w-full p-6 max-w-4xl mx-auto flex flex-col justify-center overflow-hidden">
+          <div class="text-center mb-6">
+            <h2 class="text-3xl font-black font-cinzel text-amber-300">ĐẶT TÊN 5 ĐỘI CHƠI</h2>
+            <p class="text-xs text-stone-400 mt-1">Chuẩn bị sẵn sàng 5 hạm đội cùng giong buồm ra khơi</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 mb-6">
+            ${teams.map((t, i) => `
+              <div class="p-3 rounded-xl bg-stone-900 border-2" style="border-color: ${t.color}">
+                <div class="text-xs font-bold text-amber-400 mb-1">ĐỘI ${i + 1}</div>
+                <div class="text-3xl text-center my-2">${t.emoji}</div>
+                <input type="text" value="${t.name}" oninput="teams[${i}].name = this.value" class="w-full text-xs font-semibold px-2 py-1.5 rounded bg-stone-950 border border-stone-700 text-center" />
+              </div>
+            `).join('')}
+          </div>
+          <div class="text-center">
+            <button onclick="sounds.playShipBell(); currentScreen = 'ARENA'; render();" class="px-8 py-3.5 bg-yellow-500 hover:bg-yellow-400 text-stone-950 font-cinzel font-bold text-base rounded-xl shadow-xl">
+              XÁC NHẬN VÀ RA KHƠI
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderArena() {
+      const q = questions[currentQuestionIndex];
+      const activeTeam = teams[activeTeamIndex];
+      
+      return `
+        <div class="h-screen max-h-screen w-full flex flex-col justify-between bg-stone-950 text-stone-100 overflow-hidden">
+          <!-- Topbar (h-12) -->
+          <div class="h-12 shrink-0 flex items-center justify-between px-4 sm:px-6 border-b border-amber-900/60 bg-stone-900">
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-amber-400 font-cinzel font-bold text-sm sm:text-base">ĐẠI HẢI TRÌNH</span>
+              <span class="text-xs text-stone-400 hidden sm:inline">· Câu ${currentQuestionIndex + 1}/20</span>
+            </div>
+
+            <!-- 5 Teams Turn Badges with Active Glow/Pulse -->
+            <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1 max-w-[60%]">
+              ${teams.map((t, idx) => {
+                const isActive = idx === activeTeamIndex;
+                return `
+                  <button onclick="sounds.playShipBell(); activeTeamIndex = ${idx}; render();" class="flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? 'bg-amber-950/95 border-2 border-amber-400 text-amber-200 ring-2 ring-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.6)] animate-pulse'
+                      : 'bg-stone-950/80 border border-stone-800 text-stone-400 hover:text-white'
+                  }">
+                    <span class="text-sm">${t.emoji}</span>
+                    <span class="truncate max-w-[80px]">${t.name}</span>
+                    ${isActive ? '<span class="text-yellow-400 text-[10px]">👑</span>' : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="sounds.playShipBell(); isTarotOpen = true; render();" class="px-2.5 py-1 bg-purple-700 hover:bg-purple-600 text-white font-cinzel font-bold text-xs rounded-lg shadow animate-pulse">
+                Bốc Bài Tarot
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Layout (Single Viewport - No Scroll) -->
+          <div class="flex-1 min-h-0 flex flex-col gap-2 p-2.5 sm:p-3 max-w-[1500px] mx-auto w-full justify-between overflow-hidden">
+            
+            <!-- Compact World Map Overview at Top -->
+            <div class="relative w-full h-24 sm:h-28 md:h-32 shrink-0 rounded-xl overflow-hidden border-2 border-amber-800 shadow-md bg-stone-900">
+              <img src="world_map.png" onerror="this.src='world_map.jpg'" class="absolute inset-0 w-full h-full object-cover filter sepia contrast-110 opacity-75" />
+              
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                ${teams.map((t, idx) => {
+                  const pts = trackWaypoints[idx];
+                  const d = pts.map((p, i) => i === 0 ? 'M ' + p.x + ' ' + p.y : 'L ' + p.x + ' ' + p.y).join(' ');
+                  return `<path d="${d}" fill="none" stroke="${t.color}" stroke-width="1.2" stroke-dasharray="2, 1" stroke-opacity="0.9" />`;
+                }).join('')}
+              </svg>
+
+              <div class="absolute inset-0 p-2">
+                ${teams.map((t, tIdx) => {
+                  const pts = trackWaypoints[tIdx];
+                  const pos = t.position;
+                  const curPt = pts[Math.min(pos, 10)];
+                  const isActive = tIdx === activeTeamIndex;
+                  return `
+                    <div class="absolute flex flex-col items-center transition-all duration-700 z-20 pointer-events-none" style="left: ${curPt.x}%; top: ${curPt.y}%; transform: translate(-50%, -50%);">
+                      <span class="text-base sm:text-lg filter drop-shadow animate-bounce">${t.emoji}</span>
+                      <span class="text-[8px] font-bold px-1.5 py-0.5 rounded shadow text-white whitespace-nowrap ${isActive ? 'ring-2 ring-yellow-400' : ''}" style="background-color: ${t.color}">${t.name}</span>
+                    </div>
+                  `;
+                }).join('')}
+
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 text-center z-10 bg-amber-500 text-stone-950 px-2 py-0.5 rounded shadow border border-yellow-200">
+                  <span class="text-sm">🚩</span>
+                  <div class="text-[8px] font-bold font-cinzel">ĐÍCH 🏆</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 20 Questions Quick Navigation Strip -->
+            <div class="shrink-0 flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-stone-900 border border-amber-900/60 shadow">
+              <div class="flex items-center gap-2 overflow-x-auto py-0.5">
+                <span class="text-[11px] font-cinzel font-black text-amber-300 whitespace-nowrap shrink-0">CÂU HỎI:</span>
+                <div class="flex items-center gap-1 shrink-0">
+                  ${questions.map((_, idx) => `
+                    <button onclick="currentQuestionIndex = ${idx}; checkedAnswer = false; selectedOptionIndex = null; textAnswerInput = ''; render();" class="w-7 h-6 sm:w-8 sm:h-7 rounded text-xs font-bold font-mono transition-all flex items-center justify-center ${
+                      currentQuestionIndex === idx ? 'bg-amber-500 text-stone-950 font-black ring-2 ring-yellow-300 shadow-md scale-105' : 'bg-stone-950 text-stone-300 hover:bg-amber-950 hover:text-amber-200 border border-stone-800'
+                    }">
+                      ${idx + 1}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+              <div class="text-xs text-amber-400 font-bold hidden sm:inline whitespace-nowrap">
+                Lượt: ${activeTeam.name} ${activeTeam.emoji}
+              </div>
+            </div>
+
+            <!-- Main Center Question Arena (Dominant Focus - Full Width) -->
+            <div class="flex-1 min-h-0 p-4 sm:p-5 rounded-2xl parchment border-2 border-amber-800 shadow-xl text-stone-900 flex flex-col justify-between overflow-y-auto">
+              <div>
+                <div class="flex items-center justify-between mb-2 text-xs font-bold text-amber-900">
+                  <span class="px-2.5 py-0.5 bg-amber-900 text-amber-100 rounded font-cinzel">CÂU HỎI ${q.id} / 20</span>
+                  <div class="flex gap-1.5">
+                    <button onclick="prevQuestion()" class="px-2.5 py-1 bg-amber-200 rounded font-bold hover:bg-amber-300 text-xs">« Câu trước</button>
+                    <button onclick="nextQuestion()" class="px-2.5 py-1 bg-amber-200 rounded font-bold hover:bg-amber-300 text-xs">Câu sau »</button>
+                  </div>
+                </div>
+
+                <h3 class="text-base sm:text-xl font-black mb-3 leading-snug font-sans text-stone-950">${q.question}</h3>
+
+                <!-- Options -->
+                ${q.options ? `
+                  <div class="space-y-2 mb-3">
+                    ${q.options.map((opt, oIdx) => {
+                      const isCorrectOpt = checkedAnswer && oIdx === q.correct;
+                      const isSelected = selectedOptionIndex === oIdx;
+                      return `
+                        <div onclick="selectedOptionIndex = ${oIdx}; checkAnswer();" class="p-3 rounded-xl border-2 text-xs sm:text-sm font-medium cursor-pointer transition-all ${
+                          isCorrectOpt ? 'bg-emerald-100 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500' :
+                          checkedAnswer && isSelected ? 'bg-rose-100 border-rose-600 text-rose-950' :
+                          isSelected ? 'bg-amber-200 border-amber-600 font-bold ring-2 ring-amber-500' : 'bg-white/90 border-amber-300 hover:bg-amber-50'
+                        }">
+                          ${opt}
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                ` : `
+                  <div class="mb-3">
+                    <div class="text-xs text-stone-700 font-semibold mb-1">Nhập đáp án hoặc từ khóa:</div>
+                    <input type="text" id="textInput" value="${textAnswerInput}" oninput="textAnswerInput = this.value" placeholder="Nhập câu trả lời tại đây..." class="w-full p-2.5 rounded-xl border-2 border-amber-400 bg-white text-xs font-medium" />
+                  </div>
+                `}
+              </div>
+
+              <!-- Footer Action Area -->
+              <div>
+                <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-amber-800/20">
+                  <button onclick="checkAnswer()" class="px-5 py-2 rounded-xl bg-amber-700 text-white font-bold text-xs hover:bg-amber-800 shadow">
+                    CHECK ĐÁP ÁN
+                  </button>
+                  <button onclick="openTarot()" class="px-5 py-2 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 shadow animate-pulse">
+                    BỐC BÀI TAROT
+                  </button>
+                </div>
+
+                <!-- Explanation Box & Auto transition notice -->
+                ${checkedAnswer ? `
+                  <div class="mt-2.5 p-3 rounded-xl bg-amber-100 border border-amber-400 text-xs text-stone-800 leading-relaxed shadow-inner">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="px-2 py-0.5 rounded text-white font-bold text-[10px] ${isCorrect ? 'bg-emerald-600' : 'bg-rose-600'}">
+                        ${isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC!'}
+                      </span>
+                      <strong class="text-amber-950 font-cinzel text-[11px]">GIẢI THÍCH:</strong>
+                    </div>
+                    ${q.correct_text ? '<div class="font-bold text-emerald-900 mb-0.5">Đáp án đúng: ' + q.correct_text + '</div>' : ''}
+                    <p>${q.explain}</p>
+                    <div class="mt-1.5 pt-1 border-t border-amber-300 text-purple-900 text-[11px] font-semibold flex items-center justify-between">
+                      <span>Tự chuyển sang bốc bài Tarot sau 1.5s...</span>
+                      <button onclick="openTarot()" class="px-2 py-0.5 bg-purple-700 text-white rounded text-[10px]">Bốc ngay</button>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarot Modal Overlay -->
+          ${isTarotOpen ? renderTarotModal() : ''}
+          ${winner ? renderWinnerModal() : ''}
+        </div>
+      `;
+    }
+
+    function renderTarotModal() {
+      const activeTeam = teams[activeTeamIndex];
+      return `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/85 backdrop-blur-md">
+          <div class="bg-stone-900 border-2 border-amber-500 rounded-2xl p-6 max-w-lg w-full text-center shadow-2xl">
+            <h3 class="text-xl font-bold font-cinzel text-amber-300 mb-0.5">BỐC BÀI TAROT ĐỊNH MỆNH</h3>
+            <p class="text-xs text-stone-300 mb-3">Lượt của ${activeTeam.name} ${activeTeam.emoji}</p>
+            ${!drawnCard ? `
+              <div class="grid grid-cols-5 gap-2 my-3">
+                ${currentTarotDeck.map((c, i) => `
+                  <div onclick="drawTarotCard(${i})" class="h-24 rounded-xl bg-gradient-to-b from-amber-900 to-stone-900 border border-amber-500 flex flex-col items-center justify-between p-1.5 cursor-pointer hover:scale-105 transition-all">
+                    <span class="text-amber-400 font-cinzel text-[11px] font-bold">#${i+1}</span>
+                    <i class="fa-solid fa-compass text-amber-400 text-base"></i>
+                    <span class="text-[8px] text-amber-300/80 font-cinzel">TAROT</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <div class="p-5 rounded-2xl bg-gradient-to-b from-stone-950 to-amber-950 border-2 border-yellow-400 my-3 text-center">
+                <div class="text-3xl mb-2">${drawnCard.id === 8 ? '💀' : drawnCard.id === 10 ? '📜' : '⚓'}</div>
+                <h4 class="text-lg font-bold text-amber-200 mb-1 font-cinzel">${drawnCard.title}</h4>
+              </div>
+
+              ${drawnCard.id === 8 ? `
+                <div class="my-2 text-xs text-rose-300">
+                  <div class="mb-1 font-bold">Chọn 1 đội để tấn công (-2 bước):</div>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    ${teams.filter((_, idx) => idx !== activeTeamIndex).map(t => `
+                      <button onclick="attackVictimId = ${t.id}; render();" class="p-1.5 rounded border text-[11px] ${attackVictimId === t.id ? 'bg-rose-900 border-rose-400 text-white font-bold' : 'bg-stone-800 border-stone-700 text-stone-300'}">
+                        ${t.emoji} ${t.name}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              <button onclick="applyTarotAction()" class="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-stone-950 font-cinzel font-black rounded-xl shadow-lg text-xs sm:text-sm">
+                Áp Dụng & Tiếp Tục
+              </button>
+            `}
+            <div class="mt-3">
+              <button onclick="isTarotOpen = false; render();" class="text-xs text-stone-400 hover:text-white underline">Đóng</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWinnerModal() {
+      return `
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/90 backdrop-blur-md">
+          <div class="bg-stone-900 border-2 border-yellow-400 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+            <div class="text-5xl mb-2 animate-bounce">🏆</div>
+            <h2 class="text-2xl font-bold font-cinzel text-yellow-300">HẢI TRÌNH HOÀN TẤT!</h2>
+            <p class="text-xs text-stone-300 my-3">Chúc mừng ${winner.name} ${winner.emoji} đã cán đích chiến thắng đầu tiên!</p>
+            <button onclick="winner = null; teams.forEach(t => t.position = 0); currentScreen = 'INTRO'; render();" class="px-6 py-2.5 bg-yellow-500 text-stone-950 font-bold font-cinzel rounded-xl shadow">
+              Chơi Lại Từ Đầu
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function checkAnswer() {
+      if (checkedAnswer) return;
+      checkedAnswer = true;
+      const q = questions[currentQuestionIndex];
+      if (q.options) {
+        isCorrect = selectedOptionIndex === q.correct;
+      } else if (q.correct_text) {
+        isCorrect = textAnswerInput.trim().toLowerCase().length > 0;
+      } else {
+        isCorrect = true;
+      }
+
+      if (isCorrect) sounds.playChime();
+      else sounds.playWrong();
+      render();
+
+      // Auto-transition to Tarot modal after 1.5s
+      clearTimeout(autoTimer);
+      autoTimer = setTimeout(() => {
+        openTarot();
+      }, 1500);
+    }
+
+    function openTarot() {
+      clearTimeout(autoTimer);
+      drawnCard = null;
+      attackVictimId = null;
+      // Generate phase-weighted cards
+      currentTarotDeck = getWeightedTarotDeck(currentQuestionIndex + 1, hasResetAllOccurred);
+      isTarotOpen = true;
+      render();
+    }
+
+    function drawTarotCard(idx) {
+      sounds.playShipBell();
+      drawnCard = currentTarotDeck[idx];
+      render();
+    }
+
+    function applyTarotAction() {
+      if (!drawnCard) return;
+      const t = teams[activeTeamIndex];
+      if (drawnCard.id === 1) t.position = Math.min(10, t.position + 2);
+      else if (drawnCard.id === 2) t.position = Math.min(10, t.position + 1);
+      else if (drawnCard.id === 3) { /* Đứng im */ }
+      else if (drawnCard.id === 4) t.position = Math.max(0, t.position - 2);
+      else if (drawnCard.id === 5) t.position = Math.max(0, t.position - 1);
+      else if (drawnCard.id === 6) {
+        const prev = teams[(activeTeamIndex + 4) % 5];
+        prev.position = Math.min(10, prev.position + 1);
+      } else if (drawnCard.id === 7) {
+        teams.forEach(x => x.position = 0);
+        hasResetAllOccurred = true;
+      } else if (drawnCard.id === 8) {
+        const victim = teams.find(x => x.id === attackVictimId) || teams[(activeTeamIndex + 1) % 5];
+        victim.position = Math.max(0, victim.position - 2);
+      } else if (drawnCard.id === 9) {
+        const minPos = Math.min(...teams.map(x => x.position));
+        teams.forEach(x => { if (x.position === minPos) x.position = Math.min(10, x.position + 2); });
+      } else if (drawnCard.id === 10) {
+        t.position = Math.min(10, t.position + 1);
+      }
+
+      if (t.position >= 10) winner = t;
+      isTarotOpen = false;
+      
+      // Auto-advance to next question for next team!
+      activeTeamIndex = (activeTeamIndex + 1) % 5;
+      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+      checkedAnswer = false;
+      selectedOptionIndex = null;
+      textAnswerInput = '';
+      sounds.playShipBell();
+      render();
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+      checkedAnswer = false;
+      selectedOptionIndex = null;
+      textAnswerInput = '';
+      render();
+    }
+
+    function prevQuestion() {
+      currentQuestionIndex = (currentQuestionIndex - 1 + questions.length) % questions.length;
+      checkedAnswer = false;
+      selectedOptionIndex = null;
+      textAnswerInput = '';
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
