@@ -4,6 +4,9 @@ import { sounds } from '../utils/audio';
 
 interface Props {
   initialTeams: Team[];
+  teamCount: number;
+  fullPalette: Team[];
+  onChangeTeamCount: (count: number) => void;
   onConfirmTeams: (teams: Team[]) => void;
   onBack: () => void;
 }
@@ -15,7 +18,14 @@ const EMOJI_OPTIONS = [
   '🦅', '⚡', '🔥', '🛡️', '🧜'
 ];
 
-export const ScreenTeamSetup: React.FC<Props> = ({ initialTeams, onConfirmTeams, onBack }) => {
+export const ScreenTeamSetup: React.FC<Props> = ({
+  initialTeams,
+  teamCount,
+  fullPalette,
+  onChangeTeamCount,
+  onConfirmTeams,
+  onBack,
+}) => {
   const [teams, setTeams] = useState<Team[]>(initialTeams);
   const [activeEmojiPickerIndex, setActiveEmojiPickerIndex] = useState<number | null>(null);
 
@@ -33,11 +43,41 @@ export const ScreenTeamSetup: React.FC<Props> = ({ initialTeams, onConfirmTeams,
     sounds.playCorrect();
   };
 
+  // Add one team from palette, preserving existing edits
+  const handleAddTeam = () => {
+    if (teamCount >= 8) return;
+    const newCount = teamCount + 1;
+    onChangeTeamCount(newCount);
+    // Add next team from palette at the end
+    const nextPaletteTeam = fullPalette[teams.length];
+    if (nextPaletteTeam) {
+      setTeams((prev) => [...prev, { ...nextPaletteTeam, position: 0, score: 0 }]);
+    }
+    sounds.playFlip();
+  };
+
+  // Remove last team
+  const handleRemoveTeam = () => {
+    if (teamCount <= 2) return;
+    const newCount = teamCount - 1;
+    onChangeTeamCount(newCount);
+    setTeams((prev) => prev.slice(0, newCount));
+    sounds.playWrong();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sounds.playShipBell();
     onConfirmTeams(teams);
   };
+
+  // Dynamic grid: auto-adjust columns based on team count
+  const gridCols =
+    teams.length <= 2 ? 'grid-cols-1 sm:grid-cols-2' :
+    teams.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+    teams.length === 4 ? 'grid-cols-2 md:grid-cols-4' :
+    teams.length <= 6 ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6' :
+    'grid-cols-2 md:grid-cols-4';
 
   return (
     <div className="relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden bg-stone-950 text-amber-50">
@@ -59,25 +99,59 @@ export const ScreenTeamSetup: React.FC<Props> = ({ initialTeams, onConfirmTeams,
         </button>
 
         <h2 className="text-sm sm:text-base font-cinzel font-bold tracking-widest text-amber-300 uppercase">
-          Thiết Lập 5 Hạm Đội
+          Thiết Lập Hạm Đội ({teams.length} Đội)
         </h2>
 
         <div className="w-16"></div>
       </header>
 
       {/* Content Form */}
-      <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
-        <div className="text-center mb-8">
+      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
+        <div className="text-center mb-6">
           <h1 className="text-3xl sm:text-4xl font-black font-cinzel text-amber-200 drop-shadow-md">
-            ĐẶT TÊN 5 ĐỘI CHƠI
+            ĐẶT TÊN CÁC ĐỘI CHƠI
           </h1>
           <p className="text-xs sm:text-sm text-stone-300 mt-2">
             Nhập tên đội và chọn linh vật Emoji đại diện cho hải trình sắp tới
           </p>
         </div>
 
+        {/* ── Team Count Adjuster ── */}
+        <div className="flex items-center justify-center gap-4 mb-6 bg-stone-900/80 border border-amber-800/50 rounded-2xl px-6 py-3 w-fit mx-auto backdrop-blur-md shadow-lg">
+          <span className="text-xs font-cinzel font-bold text-amber-300 uppercase tracking-wider">
+            <i className="fa-solid fa-users mr-2 text-amber-400"></i>
+            Số đội chơi:
+          </span>
+
+          <button
+            type="button"
+            onClick={handleRemoveTeam}
+            disabled={teams.length <= 2}
+            className="w-8 h-8 rounded-lg bg-rose-900/80 hover:bg-rose-700 disabled:opacity-30 disabled:cursor-not-allowed text-white font-black text-lg flex items-center justify-center transition-all border border-rose-600/60 cursor-pointer"
+            title="Bớt 1 đội (tối thiểu 2)"
+          >
+            −
+          </button>
+
+          <span className="w-10 text-center font-cinzel font-black text-2xl text-amber-200">
+            {teams.length}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleAddTeam}
+            disabled={teams.length >= 8}
+            className="w-8 h-8 rounded-lg bg-emerald-900/80 hover:bg-emerald-700 disabled:opacity-30 disabled:cursor-not-allowed text-white font-black text-lg flex items-center justify-center transition-all border border-emerald-600/60 cursor-pointer"
+            title="Thêm 1 đội (tối đa 8)"
+          >
+            +
+          </button>
+
+          <span className="text-[10px] text-stone-400 font-medium">(2 – 8 đội)</span>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className={`grid gap-3 ${gridCols}`}>
             {teams.map((team, idx) => (
               <div 
                 key={team.id}
@@ -148,7 +222,7 @@ export const ScreenTeamSetup: React.FC<Props> = ({ initialTeams, onConfirmTeams,
           </div>
 
           {/* Action Bar */}
-          <div className="pt-8 text-center">
+          <div className="pt-6 text-center">
             <button
               type="submit"
               className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-stone-950 font-cinzel font-black text-base sm:text-lg tracking-wider shadow-[0_8px_25px_rgba(245,158,11,0.4)] hover:shadow-[0_12px_35px_rgba(245,158,11,0.6)] hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-yellow-300 cursor-pointer"

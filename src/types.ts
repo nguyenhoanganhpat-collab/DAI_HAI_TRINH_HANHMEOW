@@ -13,6 +13,7 @@ export interface Team {
 export interface Question {
   id: number;
   question: string;
+  imageUrl?: string;   // URL hoặc base64 ảnh minh họa (tùy chọn)
   options?: string[];
   correct?: number;
   correct_text?: string;

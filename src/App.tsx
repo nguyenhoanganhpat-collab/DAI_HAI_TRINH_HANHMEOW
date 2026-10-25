@@ -6,7 +6,8 @@ import { ScreenTeamSetup } from './components/ScreenTeamSetup';
 import { ScreenMainArena } from './components/ScreenMainArena';
 import { sounds } from './utils/audio';
 
-const DEFAULT_TEAMS: Team[] = [
+// Full palette of 8 pre-configured teams — users can pick 2–8
+export const TEAM_PALETTE: Team[] = [
   {
     id: 1,
     name: 'Hải Tặc Mũ Rơm',
@@ -62,11 +63,46 @@ const DEFAULT_TEAMS: Team[] = [
     score: 0,
     history: [],
   },
+  {
+    id: 6,
+    name: 'Pháo Hạm Sấm Sét',
+    emoji: '⚡',
+    color: '#06b6d4',
+    bgColor: 'bg-cyan-500',
+    borderColor: '#0e7490',
+    position: 0,
+    score: 0,
+    history: [],
+  },
+  {
+    id: 7,
+    name: 'Thần Phong Hải Mã',
+    emoji: '🦅',
+    color: '#ec4899',
+    bgColor: 'bg-pink-500',
+    borderColor: '#be185d',
+    position: 0,
+    score: 0,
+    history: [],
+  },
+  {
+    id: 8,
+    name: 'Kỳ Lân Đại Dương',
+    emoji: '🦄',
+    color: '#84cc16',
+    bgColor: 'bg-lime-500',
+    borderColor: '#4d7c0f',
+    position: 0,
+    score: 0,
+    history: [],
+  },
 ];
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('INTRO');
-  const [teams, setTeams] = useState<Team[]>(DEFAULT_TEAMS);
+  // Default 5 teams, range 2–8
+  const [teamCount, setTeamCount] = useState<number>(5);
+  const [teams, setTeams] = useState<Team[]>(TEAM_PALETTE.slice(0, 5).map((t) => ({ ...t })));
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
   const handleToggleSound = () => {
@@ -76,8 +112,24 @@ export default function App() {
   };
 
   const handleResetGame = () => {
-    setTeams(DEFAULT_TEAMS.map((t) => ({ ...t, position: 0, score: 0 })));
+    setTeams(TEAM_PALETTE.slice(0, teamCount).map((t) => ({ ...t, position: 0, score: 0 })));
     setCurrentScreen('INTRO');
+  };
+
+  // Called from ScreenTeamSetup when user changes team count (+/-)
+  const handleChangeTeamCount = (newCount: number) => {
+    const clamped = Math.max(2, Math.min(8, newCount));
+    setTeamCount(clamped);
+    // Expand palette slice, preserving any name/emoji edits already made
+    setTeams((prev) => {
+      if (clamped > prev.length) {
+        // Add teams from palette (fresh reset pos/score)
+        const added = TEAM_PALETTE.slice(prev.length, clamped).map((t) => ({ ...t, position: 0, score: 0 }));
+        return [...prev, ...added];
+      }
+      // Shrink
+      return prev.slice(0, clamped);
+    });
   };
 
   return (
@@ -93,6 +145,9 @@ export default function App() {
       {currentScreen === 'TEAM_SETUP' && (
         <ScreenTeamSetup
           initialTeams={teams}
+          teamCount={teamCount}
+          fullPalette={TEAM_PALETTE}
+          onChangeTeamCount={handleChangeTeamCount}
           onConfirmTeams={(updatedTeams) => {
             setTeams(updatedTeams);
             setCurrentScreen('MAIN_ARENA');

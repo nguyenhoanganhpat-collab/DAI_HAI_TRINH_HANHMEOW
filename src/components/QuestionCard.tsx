@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Question, Team } from '../types';
-import { sounds } from '../utils/audio';
+import React, { useState, useEffect, useRef } from "react";
+import { Question, Team } from "../types";
+import { sounds } from "../utils/audio";
 
 interface Props {
   question: Question;
@@ -25,12 +25,12 @@ export const QuestionCard: React.FC<Props> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [userTextInput, setUserTextInput] = useState<string>('');
-  
+  const [userTextInput, setUserTextInput] = useState<string>("");
+
   // Interactive word bank state
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [wordBank, setWordBank] = useState<string[]>([]);
-  
+
   // Auto-transition countdown to Tarot modal
   const [tarotCountdown, setTarotCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -40,7 +40,7 @@ export const QuestionCard: React.FC<Props> = ({
     setSelectedOption(null);
     setIsChecked(false);
     setIsCorrect(null);
-    setUserTextInput('');
+    setUserTextInput("");
     setSelectedWords([]);
     setTarotCountdown(null);
     if (countdownTimerRef.current) {
@@ -50,7 +50,7 @@ export const QuestionCard: React.FC<Props> = ({
 
     const match = question.question.match(/\[([^\]]+)\]/g);
     if (match && match.length > 0) {
-      const words = match.map((w) => w.replace(/[\[\]]/g, '').trim());
+      const words = match.map((w) => w.replace(/[\[\]]/g, "").trim());
       const uniqueWords = Array.from(new Set(words));
       setWordBank([...uniqueWords].sort(() => Math.random() - 0.5));
     } else {
@@ -111,7 +111,7 @@ export const QuestionCard: React.FC<Props> = ({
     setIsChecked(true);
 
     let correctCheck = true;
-    if (question.options && typeof question.correct === 'number') {
+    if (question.options && typeof question.correct === "number") {
       correctCheck = selectedOption === question.correct;
     } else if (question.correct_text) {
       const cleanInput = userTextInput.trim().toLowerCase();
@@ -133,10 +133,10 @@ export const QuestionCard: React.FC<Props> = ({
   const isTrueFalse =
     question.options &&
     question.options.length === 2 &&
-    (question.options[0] === 'ĐÚNG' || question.options[0] === 'SAI');
+    (question.options[0] === "ĐÚNG" || question.options[0] === "SAI");
 
   return (
-    <div className="relative parchment-card rounded-xl p-4 sm:p-5 border-2 border-amber-800/80 shadow-xl wood-frame text-stone-900 h-full flex flex-col justify-between overflow-hidden">
+    <div className="relative parchment-card rounded-xl p-4 sm:p-5 border-2 border-amber-800/80 shadow-xl wood-frame text-stone-900 w-full h-full min-h-0 flex flex-col overflow-y-auto">
       {/* Top Header Row (Compact) */}
       <div className="flex items-center justify-between gap-2 pb-2 border-b border-amber-800/30 shrink-0">
         <div className="flex items-center gap-2">
@@ -149,12 +149,17 @@ export const QuestionCard: React.FC<Props> = ({
         </div>
 
         {/* Turn Indicator */}
-        <div 
+        <div
           className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border text-xs font-bold text-white shadow-xs"
-          style={{ backgroundColor: activeTeam.color, borderColor: activeTeam.borderColor }}
+          style={{
+            backgroundColor: activeTeam.color,
+            borderColor: activeTeam.borderColor,
+          }}
         >
           <span className="text-sm">{activeTeam.emoji}</span>
-          <span className="truncate max-w-[120px] sm:max-w-[180px]">Đang chơi: {activeTeam.name}</span>
+          <span className="truncate max-w-[120px] sm:max-w-[180px]">
+            Đang chơi: {activeTeam.name}
+          </span>
         </div>
 
         {/* Nav arrows */}
@@ -179,7 +184,7 @@ export const QuestionCard: React.FC<Props> = ({
       </div>
 
       {/* Question Central Body (Dominant Large Text) */}
-      <div className="my-auto py-2 flex flex-col justify-center min-h-0 overflow-y-auto">
+      <div className="flex-1 shrink-0 py-2">
         <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-stone-900 leading-snug font-sans tracking-tight mb-3">
           {question.question}
         </h2>
@@ -190,15 +195,20 @@ export const QuestionCard: React.FC<Props> = ({
             {question.options!.map((option, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrectAnswer = isChecked && idx === question.correct;
-              const isWrongSelected = isChecked && isSelected && idx !== question.correct;
+              const isWrongSelected =
+                isChecked && isSelected && idx !== question.correct;
 
-              let btnStyle = "bg-white/90 border-amber-400 text-stone-800 hover:bg-amber-100";
+              let btnStyle =
+                "bg-white/90 border-amber-400 text-stone-800 hover:bg-amber-100";
               if (isCorrectAnswer) {
-                btnStyle = "bg-emerald-500 border-emerald-600 text-white font-black shadow-lg ring-3 ring-emerald-300";
+                btnStyle =
+                  "bg-emerald-500 border-emerald-600 text-white font-black shadow-lg ring-3 ring-emerald-300";
               } else if (isWrongSelected) {
-                btnStyle = "bg-rose-600 border-rose-700 text-white font-bold ring-2 ring-rose-400";
+                btnStyle =
+                  "bg-rose-600 border-rose-700 text-white font-bold ring-2 ring-rose-400";
               } else if (isSelected) {
-                btnStyle = "bg-amber-500 border-amber-600 text-stone-950 font-black shadow-md ring-2 ring-amber-400";
+                btnStyle =
+                  "bg-amber-500 border-amber-600 text-stone-950 font-black shadow-md ring-2 ring-amber-400";
               }
 
               return (
@@ -208,7 +218,9 @@ export const QuestionCard: React.FC<Props> = ({
                   onClick={() => handleSelectOption(idx)}
                   className={`py-3.5 px-4 rounded-xl border-2 text-lg sm:text-2xl font-cinzel font-black flex items-center justify-center gap-2.5 transition-all cursor-pointer ${btnStyle}`}
                 >
-                  <i className={`fa-solid ${option === 'ĐÚNG' ? 'fa-circle-check text-emerald-400' : 'fa-circle-xmark text-rose-400'}`}></i>
+                  <i
+                    className={`fa-solid ${option === "ĐÚNG" ? "fa-circle-check text-emerald-400" : "fa-circle-xmark text-rose-400"}`}
+                  ></i>
                   <span>{option}</span>
                 </button>
               );
@@ -222,15 +234,20 @@ export const QuestionCard: React.FC<Props> = ({
             {question.options.map((option, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrectAnswer = isChecked && idx === question.correct;
-              const isWrongSelected = isChecked && isSelected && idx !== question.correct;
+              const isWrongSelected =
+                isChecked && isSelected && idx !== question.correct;
 
-              let cardStyle = "bg-white/90 border-amber-300/80 hover:bg-amber-100/70 hover:border-amber-500 text-stone-800";
+              let cardStyle =
+                "bg-white/90 border-amber-300/80 hover:bg-amber-100/70 hover:border-amber-500 text-stone-800";
               if (isCorrectAnswer) {
-                cardStyle = "bg-emerald-100 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500 shadow-sm";
+                cardStyle =
+                  "bg-emerald-100 border-emerald-600 text-emerald-950 font-bold ring-2 ring-emerald-500 shadow-sm";
               } else if (isWrongSelected) {
-                cardStyle = "bg-rose-100 border-rose-500 text-rose-950 font-semibold ring-1 ring-rose-400";
+                cardStyle =
+                  "bg-rose-100 border-rose-500 text-rose-950 font-semibold ring-1 ring-rose-400";
               } else if (isSelected) {
-                cardStyle = "bg-amber-200 border-amber-600 text-stone-900 font-bold ring-2 ring-amber-500 shadow-xs";
+                cardStyle =
+                  "bg-amber-200 border-amber-600 text-stone-900 font-bold ring-2 ring-amber-500 shadow-xs";
               }
 
               return (
@@ -276,11 +293,15 @@ export const QuestionCard: React.FC<Props> = ({
                         onClick={() => handleWordBankClick(word)}
                         className={`px-2.5 py-1 rounded text-xs font-bold border transition-all cursor-pointer ${
                           isPicked
-                            ? 'bg-amber-600 text-white border-amber-700 shadow-xs'
-                            : 'bg-white text-stone-800 border-amber-300 hover:bg-amber-50'
+                            ? "bg-amber-600 text-white border-amber-700 shadow-xs"
+                            : "bg-white text-stone-800 border-amber-300 hover:bg-amber-50"
                         }`}
                       >
-                        {isPicked && <span className="mr-1 text-[10px] bg-black/20 px-1 rounded">({pickIndex})</span>}
+                        {isPicked && (
+                          <span className="mr-1 text-[10px] bg-black/20 px-1 rounded">
+                            ({pickIndex})
+                          </span>
+                        )}
                         {word}
                       </button>
                     );
@@ -301,8 +322,12 @@ export const QuestionCard: React.FC<Props> = ({
 
             {isChecked && question.correct_text && (
               <div className="p-2 rounded-lg bg-emerald-100 border border-emerald-600 text-emerald-950 animate-in fade-in">
-                <span className="text-xs uppercase font-bold tracking-wider text-emerald-800 block">ĐÁP ÁN:</span>
-                <span className="text-sm font-bold font-cinzel text-emerald-950">{question.correct_text}</span>
+                <span className="text-xs uppercase font-bold tracking-wider text-emerald-800 block">
+                  ĐÁP ÁN:
+                </span>
+                <span className="text-sm font-bold font-cinzel text-emerald-950">
+                  {question.correct_text}
+                </span>
               </div>
             )}
           </div>
@@ -344,7 +369,7 @@ export const QuestionCard: React.FC<Props> = ({
             className="group px-5 py-2 rounded-xl bg-gradient-to-r from-purple-800 to-indigo-800 hover:from-purple-700 hover:to-indigo-700 text-white font-cinzel font-bold text-xs sm:text-sm tracking-wide shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-purple-400 animate-pulse"
           >
             <i className="fa-solid fa-wand-magic-sparkles mr-1.5 text-yellow-300"></i>
-            BỐC BÀI TAROT
+            BỐC BÀI
           </button>
         </div>
 
@@ -353,7 +378,13 @@ export const QuestionCard: React.FC<Props> = ({
           <div className="px-3 py-1.5 bg-purple-950/95 text-purple-100 rounded-lg border border-purple-400 flex items-center justify-between animate-in fade-in text-xs">
             <span className="flex items-center gap-1.5">
               <i className="fa-solid fa-hourglass-half text-amber-400 animate-spin text-xs"></i>
-              <span>Tự động mở bài Tarot sau <strong className="text-yellow-300 font-bold">{tarotCountdown}s</strong>...</span>
+              <span>
+                Tự động mở bài Tarot sau{" "}
+                <strong className="text-yellow-300 font-bold">
+                  {tarotCountdown}s
+                </strong>
+                ...
+              </span>
             </span>
             <div className="flex gap-1.5">
               <button
@@ -381,10 +412,14 @@ export const QuestionCard: React.FC<Props> = ({
         {isChecked && (
           <div className="p-2.5 sm:p-3 rounded-lg bg-amber-100/95 border border-amber-400 shadow-inner text-xs leading-relaxed text-stone-800 animate-in fade-in">
             <div className="flex items-center gap-2 mb-1">
-              <span className={`px-2 py-0.5 rounded text-white font-black text-[10px] uppercase ${isCorrect ? 'bg-emerald-600' : 'bg-rose-600'}`}>
-                {isCorrect ? 'CHÍNH XÁC!' : 'CHƯA CHÍNH XÁC!'}
+              <span
+                className={`px-2 py-0.5 rounded text-white font-black text-[10px] uppercase ${isCorrect ? "bg-emerald-600" : "bg-rose-600"}`}
+              >
+                {isCorrect ? "CHÍNH XÁC!" : "CHƯA CHÍNH XÁC!"}
               </span>
-              <span className="font-cinzel font-bold text-amber-950 text-[11px]">GIẢI THÍCH CHI TIẾT:</span>
+              <span className="font-cinzel font-bold text-amber-950 text-[11px]">
+                GIẢI THÍCH CHI TIẾT:
+              </span>
             </div>
             <p className="font-sans text-stone-800 text-xs leading-snug line-clamp-3 hover:line-clamp-none transition-all">
               {question.explain}

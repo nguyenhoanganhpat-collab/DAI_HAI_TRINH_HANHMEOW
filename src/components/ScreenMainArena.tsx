@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Team, Question } from '../types';
-import { GameBoard } from './GameBoard';
-import { QuestionCard } from './QuestionCard';
-import { TarotDrawModal } from './TarotDrawModal';
-import { VictoryModal } from './VictoryModal';
-import { sounds } from '../utils/audio';
-import { exportStandaloneHtmlFile } from '../utils/htmlExporter';
-import { MAX_STEPS } from '../data/tracks';
+import React, { useState } from "react";
+import { Team, Question } from "../types";
+import { GameBoard } from "./GameBoard";
+import { QuestionCard } from "./QuestionCard";
+import { TarotDrawModal } from "./TarotDrawModal";
+import { VictoryModal } from "./VictoryModal";
+import { sounds } from "../utils/audio";
+import { exportStandaloneHtmlFile } from "../utils/htmlExporter";
+import { MAX_STEPS } from "../data/tracks";
 
 interface Props {
   teams: Team[];
@@ -28,7 +28,8 @@ export const ScreenMainArena: React.FC<Props> = ({
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [activeTeamIndex, setActiveTeamIndex] = useState<number>(0);
   const [isTarotOpen, setIsTarotOpen] = useState<boolean>(false);
-  const [hasResetAllOccurred, setHasResetAllOccurred] = useState<boolean>(false);
+  const [hasResetAllOccurred, setHasResetAllOccurred] =
+    useState<boolean>(false);
   const [winningTeam, setWinningTeam] = useState<Team | null>(null);
   const [isVictoryModalOpen, setIsVictoryModalOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -45,12 +46,17 @@ export const ScreenMainArena: React.FC<Props> = ({
   };
 
   const handlePrevQuestion = () => {
-    setCurrentQuestionIndex((prev) => (prev - 1 + questions.length) % questions.length);
+    setCurrentQuestionIndex(
+      (prev) => (prev - 1 + questions.length) % questions.length,
+    );
   };
 
   const handleAdjustTeamPosition = (teamIndex: number, delta: number) => {
-    const updated = [...teams];
-    const newPos = Math.max(0, Math.min(MAX_STEPS, updated[teamIndex].position + delta));
+    const updated = teams.map((team) => ({ ...team }));
+    const newPos = Math.max(
+      0,
+      Math.min(MAX_STEPS, updated[teamIndex].position + delta),
+    );
     updated[teamIndex].position = newPos;
     if (delta > 0) {
       updated[teamIndex].score += 10;
@@ -66,7 +72,11 @@ export const ScreenMainArena: React.FC<Props> = ({
     }
   };
 
-  const handleTarotApplied = (actionDesc: string, updatedTeams: Team[], wasResetAll: boolean) => {
+  const handleTarotApplied = (
+    actionDesc: string,
+    updatedTeams: Team[],
+    wasResetAll: boolean,
+  ) => {
     onUpdateTeams(updatedTeams);
     if (wasResetAll) {
       setHasResetAllOccurred(true);
@@ -103,9 +113,9 @@ export const ScreenMainArena: React.FC<Props> = ({
   const previousTeamIndex = (activeTeamIndex - 1 + teams.length) % teams.length;
 
   return (
-    <div className="relative h-screen max-h-screen overflow-hidden w-full bg-stone-950 text-stone-100 flex flex-col justify-between selection:bg-amber-500 selection:text-white">
+    <div className="relative h-dvh max-h-dvh overflow-hidden w-full bg-stone-950 text-stone-100 flex flex-col selection:bg-amber-500 selection:text-white">
       {/* Background Vintage World Map Cover */}
-      <div 
+      <div
         className="fixed inset-0 bg-cover bg-center opacity-15 filter sepia contrast-125 pointer-events-none"
         style={{ backgroundImage: `url('/world_map.png')` }}
       />
@@ -138,14 +148,18 @@ export const ScreenMainArena: React.FC<Props> = ({
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   isActive
-                    ? 'bg-amber-950/95 border-2 border-amber-400 text-amber-200 ring-2 ring-amber-400 shadow-[0_0_18px_rgba(245,158,11,0.65)] animate-pulse'
-                    : 'bg-stone-900/80 border border-stone-800 text-stone-300 hover:border-amber-700/60 hover:text-white'
+                    ? "bg-amber-950/95 border-2 border-amber-400 text-amber-200 ring-2 ring-amber-400 shadow-[0_0_18px_rgba(245,158,11,0.65)] animate-pulse"
+                    : "bg-stone-900/80 border border-stone-800 text-stone-300 hover:border-amber-700/60 hover:text-white"
                 }`}
                 title="Bấm để chuyển lượt cho hạm đội này"
               >
                 <span className="text-sm">{t.emoji}</span>
-                <span className="truncate max-w-[80px] sm:max-w-[120px]">{t.name}</span>
-                {isActive && <span className="text-yellow-400 text-[10px]">👑</span>}
+                <span className="truncate max-w-[80px] sm:max-w-[120px]">
+                  {t.name}
+                </span>
+                {isActive && (
+                  <span className="text-yellow-400 text-[10px]">👑</span>
+                )}
               </button>
             );
           })}
@@ -178,7 +192,9 @@ export const ScreenMainArena: React.FC<Props> = ({
             className="p-1.5 rounded-lg border border-amber-800/60 bg-stone-900 text-amber-300 hover:text-white text-xs transition-colors cursor-pointer"
             title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
           >
-            <i className={`fa-solid ${soundEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
+            <i
+              className={`fa-solid ${soundEnabled ? "fa-volume-high" : "fa-volume-xmark"}`}
+            ></i>
           </button>
 
           <button
@@ -191,7 +207,9 @@ export const ScreenMainArena: React.FC<Props> = ({
 
           <button
             onClick={() => {
-              if (confirm("Bạn có chắc chắn muốn khởi động lại toàn bộ trò chơi?")) {
+              if (
+                confirm("Bạn có chắc chắn muốn khởi động lại toàn bộ trò chơi?")
+              ) {
                 onResetGame();
               }
             }}
@@ -212,15 +230,16 @@ export const ScreenMainArena: React.FC<Props> = ({
       )}
 
       {/* Main Single Viewport (NO SCROLL) Layout */}
-      <main className="relative z-10 flex-1 min-h-0 w-full max-w-[1500px] mx-auto p-2.5 sm:p-3 flex flex-col gap-2 justify-between overflow-hidden">
+      <main className="relative z-10 flex-1 min-h-0 w-full max-w-[1500px] mx-auto p-2.5 sm:p-3 flex flex-col gap-2 overflow-hidden">
         {/* Top Compact World Map Overview with 5 Zigzag Tracks */}
         <div className="shrink-0">
           <GameBoard
             teams={teams}
             activeTeamIndex={activeTeamIndex}
             onSelectTeamPosition={(teamIdx, newPos) => {
-              const updated = [...teams];
-              updated[teamIdx].position = newPos;
+              const updated = teams.map((team, idx) =>
+                idx === teamIdx ? { ...team, position: newPos } : team,
+              );
               onUpdateTeams(updated);
               sounds.playShipBell();
               if (newPos >= MAX_STEPS) {
@@ -251,8 +270,8 @@ export const ScreenMainArena: React.FC<Props> = ({
                     }}
                     className={`w-7 h-6 sm:w-8 sm:h-7 rounded text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center ${
                       isCurrent
-                        ? 'bg-amber-500 text-stone-950 font-black ring-2 ring-yellow-300 shadow-md scale-105'
-                        : 'bg-stone-950 text-stone-300 hover:bg-amber-950 hover:text-amber-200 border border-stone-800'
+                        ? "bg-amber-500 text-stone-950 font-black ring-2 ring-yellow-300 shadow-md scale-105"
+                        : "bg-stone-950 text-stone-300 hover:bg-amber-950 hover:text-amber-200 border border-stone-800"
                     }`}
                     title={`Chuyển đến Câu ${idx + 1}`}
                   >
@@ -274,7 +293,7 @@ export const ScreenMainArena: React.FC<Props> = ({
         </div>
 
         {/* Central Question Arena (Dominant Focus, Fits Viewport) */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="w-full flex-1 min-h-0 overflow-hidden">
           <QuestionCard
             question={currentQ}
             activeTeam={activeTeam}
@@ -311,7 +330,8 @@ export const ScreenMainArena: React.FC<Props> = ({
 
       {/* Minimal Footer (~22px) */}
       <footer className="relative z-10 h-6 shrink-0 border-t border-amber-950/80 bg-stone-950/95 flex items-center justify-center text-[10px] text-amber-500/70">
-        Đại Hải Trình · Triết học Mác - Lênin & Giải mã Deepfake · Single Viewport 100vh
+        Đại Hải Trình · Triết học Mác - Lênin & Giải mã Deepfake · Single
+        Viewport 100vh
       </footer>
     </div>
   );

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Team } from '../types';
-import { TRACK_WAYPOINTS, getSvgPath, MAX_STEPS } from '../data/tracks';
+import { Team } from "../types";
+import { TRACK_WAYPOINTS, getSvgPath, MAX_STEPS } from "../data/tracks";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Props {
   teams: Team[];
@@ -13,15 +13,52 @@ export const GameBoard: React.FC<Props> = ({
   activeTeamIndex,
   onSelectTeamPosition,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const positionsKey = JSON.stringify(
+    teams.map((team) => [team.id, team.position]),
+  );
+
+  const previousPositions = useRef(positionsKey);
+  const [displayedPositions, setDisplayedPositions] = useState(positionsKey);
+
+  useEffect(() => {
+    if (previousPositions.current === positionsKey) return;
+
+    previousPositions.current = positionsKey;
+    setIsExpanded(true);
+
+    // Let the board open before moving ships to their latest positions.
+    const movementTimer = setTimeout(() => {
+      setDisplayedPositions(positionsKey);
+    }, 500);
+    const collapseTimer = setTimeout(() => {
+      setIsExpanded(false);
+    }, 2200);
+
+    return () => {
+      clearTimeout(movementTimer);
+      clearTimeout(collapseTimer);
+    };
+  }, [positionsKey]);
+
+  const shipPositions = new Map<number, number>(JSON.parse(displayedPositions));
   return (
-    <div className="relative w-full h-24 sm:h-28 md:h-32 lg:h-36 rounded-xl overflow-hidden border-2 border-amber-800/80 shadow-[0_8px_25px_rgba(0,0,0,0.6)] bg-stone-900 wood-frame select-none">
+    <div
+      className={`relative w-full shrink-0 rounded-xl overflow-hidden
+    border-2 border-amber-800/80
+    shadow-[0_8px_25px_rgba(0,0,0,0.6)]
+    bg-stone-900 wood-frame select-none
+    transition-[height] duration-500 ease-in-out
+    ${isExpanded ? "h-[45dvh]" : "h-[24dvh]"}`}
+    >
       {/* Background Vintage World Map Image */}
       <img
         src="/world_map.png"
         onError={(e) => {
           const target = e.currentTarget;
-          if (!target.src.includes('world_map.jpg')) {
-            target.src = '/world_map.jpg';
+          if (!target.src.includes("world_map.jpg")) {
+            target.src = "/world_map.jpg";
           }
         }}
         alt="Bản đồ thế giới cổ Đại Hải Trình"
@@ -34,9 +71,9 @@ export const GameBoard: React.FC<Props> = ({
       <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_50px_rgba(43,26,12,0.8)]" />
 
       {/* SVG Layer for 5 Zigzag Navigation Roadtracks */}
-      <svg 
-        className="absolute inset-0 w-full h-full pointer-events-none" 
-        viewBox="0 0 100 100" 
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        viewBox="0 0 100 100"
         preserveAspectRatio="none"
       >
         {teams.map((team, idx) => {
@@ -82,15 +119,17 @@ export const GameBoard: React.FC<Props> = ({
             return (
               <div
                 key={`wp-${tIdx}-${stepIdx}`}
-                onClick={() => onSelectTeamPosition && onSelectTeamPosition(tIdx, stepIdx)}
+                onClick={() =>
+                  onSelectTeamPosition && onSelectTeamPosition(tIdx, stepIdx)
+                }
                 className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-all duration-150 hover:scale-140 z-10 ${
                   isDestination
-                    ? 'w-5 h-5 bg-yellow-400 border border-stone-900 shadow-md flex items-center justify-center animate-pulse'
+                    ? "w-5 h-5 bg-yellow-400 border border-stone-900 shadow-md flex items-center justify-center animate-pulse"
                     : isStart
-                    ? 'w-2.5 h-2.5 bg-amber-950 border border-amber-300'
-                    : isCurrentPos
-                    ? 'w-3.5 h-3.5 bg-white border-2 shadow-lg ring-1 ring-yellow-400'
-                    : 'w-2 h-2 sm:w-2.5 sm:h-2.5 bg-amber-950/80 border border-amber-300/70'
+                      ? "w-2.5 h-2.5 bg-amber-950 border border-amber-300"
+                      : isCurrentPos
+                        ? "w-3.5 h-3.5 bg-white border-2 shadow-lg ring-1 ring-yellow-400"
+                        : "w-2 h-2 sm:w-2.5 sm:h-2.5 bg-amber-950/80 border border-amber-300/70"
                 }`}
                 style={{
                   left: `${pt.x}%`,
@@ -114,21 +153,23 @@ export const GameBoard: React.FC<Props> = ({
 
         {/* Finish Line Island Badge */}
         <div className="absolute right-2.5 top-2 z-20 bg-amber-500 text-stone-950 px-2 py-0.5 rounded border border-yellow-200 text-[9px] sm:text-[10px] font-cinzel font-black shadow-lg flex items-center gap-1 animate-pulse">
-          <i className="fa-solid fa-flag-checkered text-stone-950"></i> ĐÍCH 🚩 🏆
+          <i className="fa-solid fa-flag-checkered text-stone-950"></i> ĐÍCH 🚩
+          🏆
         </div>
 
         {/* 5 Ships / Tokens Moving smoothly on the Zigzag Waypoints */}
         {teams.map((team, idx) => {
           const waypoints = TRACK_WAYPOINTS[idx] || [];
-          const clampedPos = Math.max(0, Math.min(MAX_STEPS, team.position));
+          const clampedPos = Math.max(0, Math.min(MAX_STEPS, shipPositions.get(team.id) ?? team.position));
           const currentPt = waypoints[clampedPos] || waypoints[0];
+          if (!currentPt) return null;
           const isActive = idx === activeTeamIndex;
 
           return (
             <div
               key={`ship-${team.id}`}
               className={`absolute transition-all duration-700 ease-out z-30 flex flex-col items-center pointer-events-none -translate-x-1/2 -translate-y-1/2 ${
-                isActive ? 'scale-110 z-40' : 'scale-95 opacity-85'
+                isActive ? "scale-110 z-40" : "scale-95 opacity-85"
               }`}
               style={{
                 left: `${currentPt.x}%`,
@@ -137,7 +178,7 @@ export const GameBoard: React.FC<Props> = ({
             >
               {/* Active beacon pulse ring */}
               {isActive && (
-                <div 
+                <div
                   className="absolute -inset-2 rounded-full animate-ping opacity-60 pointer-events-none"
                   style={{ backgroundColor: team.color }}
                 />
@@ -147,12 +188,15 @@ export const GameBoard: React.FC<Props> = ({
               <div
                 className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center text-sm sm:text-base shadow-[0_4px_12px_rgba(0,0,0,0.8)] backdrop-blur-xs bg-stone-950/90 transition-all ${
                   isActive
-                    ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-stone-900 shadow-[0_0_15px_rgba(234,179,8,0.9)]'
-                    : ''
+                    ? "ring-2 ring-yellow-400 ring-offset-1 ring-offset-stone-900 shadow-[0_0_15px_rgba(234,179,8,0.9)]"
+                    : ""
                 }`}
                 style={{ borderColor: team.color }}
               >
-                <span className="drop-shadow-sm select-none animate-bounce" style={{ animationDuration: `${2 + idx * 0.25}s` }}>
+                <span
+                  className="drop-shadow-sm select-none animate-bounce"
+                  style={{ animationDuration: `${2 + idx * 0.25}s` }}
+                >
                   {team.emoji}
                 </span>
 
@@ -169,7 +213,9 @@ export const GameBoard: React.FC<Props> = ({
                 className="mt-0.5 px-2 py-0.5 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-md tracking-tight flex items-center gap-1 border border-white/20"
                 style={{ backgroundColor: team.color }}
               >
-                <span className="truncate max-w-[80px] sm:max-w-[100px]">{team.name}</span>
+                <span className="truncate max-w-[80px] sm:max-w-[100px]">
+                  {team.name}
+                </span>
               </div>
             </div>
           );

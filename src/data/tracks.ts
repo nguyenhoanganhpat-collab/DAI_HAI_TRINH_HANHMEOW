@@ -5,9 +5,10 @@ export interface Waypoint {
 
 export const MAX_STEPS = 10;
 
-// 5 Zigzag navigation tracks spanning from left to right across the world map
+// 8 Zigzag navigation tracks spanning from left to right across the world map
+// Supports 2–8 teams dynamically
 export const TRACK_WAYPOINTS: Waypoint[][] = [
-  // Đội 1: Đường Bắc Hải (North Route)
+  // Đội 1: Đường Bắc Hải (North Route) — y≈16
   [
     { x: 5, y: 16 },
     { x: 14, y: 12 },
@@ -21,7 +22,7 @@ export const TRACK_WAYPOINTS: Waypoint[][] = [
     { x: 89, y: 16 },
     { x: 96, y: 18 },
   ],
-  // Đội 2: Đường Nhiệt Đới (Tropical Route)
+  // Đội 2: Đường Nhiệt Đới (Tropical Route) — y≈32
   [
     { x: 5, y: 32 },
     { x: 13, y: 36 },
@@ -35,7 +36,7 @@ export const TRACK_WAYPOINTS: Waypoint[][] = [
     { x: 89, y: 36 },
     { x: 96, y: 34 },
   ],
-  // Đội 3: Đường Xích Đạo (Equatorial Route)
+  // Đội 3: Đường Xích Đạo (Equatorial Route) — y≈50
   [
     { x: 5, y: 50 },
     { x: 14, y: 46 },
@@ -49,7 +50,7 @@ export const TRACK_WAYPOINTS: Waypoint[][] = [
     { x: 89, y: 49 },
     { x: 96, y: 51 },
   ],
-  // Đội 4: Đường Nam Hải (South Oceanic Route)
+  // Đội 4: Đường Nam Hải (South Oceanic Route) — y≈67
   [
     { x: 5, y: 67 },
     { x: 14, y: 72 },
@@ -63,7 +64,7 @@ export const TRACK_WAYPOINTS: Waypoint[][] = [
     { x: 89, y: 71 },
     { x: 96, y: 68 },
   ],
-  // Đội 5: Đường Băng Nam Cực (Antarctic Edge Route)
+  // Đội 5: Đường Băng Nam Cực (Antarctic Edge Route) — y≈84
   [
     { x: 5, y: 84 },
     { x: 13, y: 88 },
@@ -76,6 +77,48 @@ export const TRACK_WAYPOINTS: Waypoint[][] = [
     { x: 81, y: 83 },
     { x: 89, y: 87 },
     { x: 96, y: 85 },
+  ],
+  // Đội 6: Đường Bắc Gió (Northern Wind Route) — y≈24
+  [
+    { x: 5, y: 24 },
+    { x: 14, y: 20 },
+    { x: 23, y: 27 },
+    { x: 33, y: 21 },
+    { x: 43, y: 28 },
+    { x: 53, y: 22 },
+    { x: 63, y: 29 },
+    { x: 72, y: 23 },
+    { x: 81, y: 28 },
+    { x: 89, y: 23 },
+    { x: 96, y: 25 },
+  ],
+  // Đội 7: Đường Gió Mùa (Monsoon Route) — y≈40
+  [
+    { x: 5, y: 40 },
+    { x: 13, y: 44 },
+    { x: 22, y: 37 },
+    { x: 32, y: 43 },
+    { x: 42, y: 38 },
+    { x: 52, y: 45 },
+    { x: 62, y: 39 },
+    { x: 71, y: 44 },
+    { x: 80, y: 39 },
+    { x: 89, y: 43 },
+    { x: 96, y: 41 },
+  ],
+  // Đội 8: Đường Hải Lưu Ấm (Warm Current Route) — y≈60
+  [
+    { x: 5, y: 60 },
+    { x: 14, y: 56 },
+    { x: 23, y: 63 },
+    { x: 33, y: 57 },
+    { x: 43, y: 64 },
+    { x: 53, y: 58 },
+    { x: 63, y: 65 },
+    { x: 72, y: 59 },
+    { x: 81, y: 64 },
+    { x: 89, y: 59 },
+    { x: 96, y: 61 },
   ],
 ];
 

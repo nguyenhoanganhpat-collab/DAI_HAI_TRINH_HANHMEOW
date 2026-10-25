@@ -76,10 +76,16 @@ export const ALL_TAROT_CARDS: TarotCard[] = [
 export const TAROT_CARDS = ALL_TAROT_CARDS;
 
 /**
- * Game Logic Engine: Generates card pool based on game progression
- * - Phase 1 (Q1-7): 80% Advance 1 or 2 steps
- * - Phase 2 (Q8-14): Retreat, Stay, Tongue twister. "Reset all" appears EXACTLY ONCE (around Q9-12)
- * - Phase 3 (Q15-20): Attack, Boost last, Retreat 2, Advance 2
+ * Game Logic Engine: Generates a 10-card weighted pool based on game phase.
+ *
+ * Phase 1a (Q1-5):  90% Advance — Khởi hành thần tốc, tạo hưng phấn cho người chơi
+ * Phase 1b (Q6-7):  70% Advance — Chớm sóng, bắt đầu xuất hiện bài không thuận
+ * Phase 2a (Q8-11): ~30% Advance — Sóng gió bùng phát. "Tất cả về xuất phát" xuất hiện
+ *                   ĐÚNG 1 LẦN DUY NHẤT trong cửa sổ câu 9-11 nếu chưa xảy ra.
+ * Phase 2b (Q12-14): 20% Advance — Giông bão dữ dội, retreat và challenge tăng mạnh
+ * Phase 3  (Q15-20): Kịch tính quyết chiến — Attack, Boost last, Retreat 2, Advance 2
+ *
+ * Pool size: 10 cards, shuffled with Fisher-Yates algorithm.
  */
 export function getPhaseWeightedCardPool(
   questionNumber: number,
@@ -98,21 +104,36 @@ export function getPhaseWeightedCardPool(
 
   let pool: TarotCard[] = [];
 
-  if (questionNumber <= 7) {
-    // Phase 1 (Câu 1 đến 7): 80% Tiến 1 hoặc Tiến 2
-    pool = [c1, c1, c1, c1, c2, c2, c2, c2, c3, c6];
-  } else if (questionNumber >= 8 && questionNumber <= 14) {
-    // Phase 2 (Câu 8 đến 14): Bắt đầu xuất hiện Lùi, Đứng im, Đọc nhanh
-    // Card 7 "Tất cả về vị trí xuất phát" CHỈ ĐƯỢC XUẤT HIỆN DUY NHẤT 1 LẦN (ở phân đoạn câu 9-11)
+  if (questionNumber <= 5) {
+    // Phase 1a (Câu 1-5): 90% Advance — Khởi hành thần tốc
+    // 3x tiến2 + 6x tiến1 + 1x đứng im = 9/10 advance
+    pool = [c1, c1, c1, c2, c2, c2, c2, c2, c2, c3];
+
+  } else if (questionNumber <= 7) {
+    // Phase 1b (Câu 6-7): 70% Advance — Chớm sóng
+    // 2x tiến2 + 3x tiến1 + 2x đứng im + 1x lùi1 + 2x đội trước tiến1
+    pool = [c1, c1, c2, c2, c2, c3, c3, c5, c6, c6];
+
+  } else if (questionNumber <= 11) {
+    // Phase 2a (Câu 8-11): ~30% Advance — Sóng gió bùng phát
+    // Card 7 "Tất cả về vị trí xuất phát" CHỈ ĐƯỢC XUẤT HIỆN DUY NHẤT 1 LẦN (cửa sổ câu 9-11)
     const canIncludeReset = !hasResetAllOccurred && questionNumber >= 9 && questionNumber <= 11;
 
     if (canIncludeReset) {
-      pool = [c7, c4, c5, c3, c10, c2, c1, c5, c3, c10];
+      // Có reset_all: 2x tiến + 1x đứng im + 2x lùi1 + 2x lùi2 + 1x challenge + 1x đứng im + 1x reset
+      pool = [c7, c4, c4, c5, c5, c3, c10, c2, c1, c3];
     } else {
-      pool = [c4, c5, c3, c10, c2, c1, c5, c3, c6, c10];
+      // Không có reset_all: tăng lùi và challenge
+      pool = [c4, c4, c5, c5, c3, c10, c2, c1, c6, c3];
     }
+
+  } else if (questionNumber <= 14) {
+    // Phase 2b (Câu 12-14): 20% Advance — Giông bão dữ dội
+    // 2x lùi2 + 2x lùi1 + 2x challenge + 2x đứng im + 1x tiến2 + 1x tiến1
+    pool = [c4, c4, c5, c5, c10, c10, c3, c3, c2, c1];
+
   } else {
-    // Phase 3 (Câu 15 đến 20): Kịch tính cao độ - Tấn công, Lùi 2, Đội bét bảng +2
+    // Phase 3 (Câu 15-20): Kịch tính về đích — Attack, Boost last, Retreat 2, Advance 2
     pool = [c8, c8, c9, c9, c4, c4, c1, c1, c2, c10];
   }
 
@@ -124,4 +145,20 @@ export function getPhaseWeightedCardPool(
   }
 
   return shuffled;
+}
+
+/**
+ * Draws a single random card from a given pool (or creates a new phase pool).
+ * Can be called externally to get just one card without managing the full deck UI.
+ * @param pool - Pre-generated pool from getPhaseWeightedCardPool, or null to use phase logic
+ * @param questionNumber - Used if pool is null
+ * @param hasResetAllOccurred - Used if pool is null
+ */
+export function drawSingleCard(
+  pool: TarotCard[] | null,
+  questionNumber?: number,
+  hasResetAllOccurred?: boolean
+): TarotCard {
+  const deck = pool ?? getPhaseWeightedCardPool(questionNumber ?? 1, hasResetAllOccurred ?? false);
+  return deck[Math.floor(Math.random() * deck.length)];
 }
