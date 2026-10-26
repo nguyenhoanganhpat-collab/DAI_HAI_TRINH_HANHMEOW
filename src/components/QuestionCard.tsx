@@ -26,6 +26,7 @@ export const QuestionCard: React.FC<Props> = ({
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [userTextInput, setUserTextInput] = useState<string>("");
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
 
   // Interactive word bank state
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
@@ -65,6 +66,17 @@ export const QuestionCard: React.FC<Props> = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!isImageZoomed) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsImageZoomed(false);
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isImageZoomed]);
 
   const handleSelectOption = (index: number) => {
     if (isChecked) return;
@@ -185,6 +197,16 @@ export const QuestionCard: React.FC<Props> = ({
 
       {/* Question Central Body (Dominant Large Text) */}
       <div className="flex-1 shrink-0 py-2">
+        {question.imageUrl && (
+          <img
+            key={question.imageUrl}
+            src={question.imageUrl}
+            alt={`Ảnh minh họa câu ${currentNumber}`}
+            onClick={() => setIsImageZoomed(true)}
+            title="Bấm để phóng to ảnh"
+            className="block w-full max-h-[28dvh] object-contain rounded-lg mb-3 bg-white/60 cursor-zoom-in hover:opacity-90 transition-opacity"
+          />
+        )}
         <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-stone-900 leading-snug font-sans tracking-tight mb-3">
           {question.question}
         </h2>
@@ -333,6 +355,33 @@ export const QuestionCard: React.FC<Props> = ({
           </div>
         )}
       </div>
+
+      {isImageZoomed && question.imageUrl && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center cursor-zoom-out"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ảnh phóng to"
+          onClick={() => setIsImageZoomed(false)}
+        >
+          <div className="relative max-w-[95vw] max-h-[92dvh]" onClick={(event) => event.stopPropagation()}>
+            <img
+              src={question.imageUrl}
+              alt={`Ảnh minh họa câu ${currentNumber} phóng to`}
+              className="max-w-[95vw] max-h-[92dvh] object-contain rounded-xl shadow-2xl"
+            />
+            <button
+              type="button"
+              onClick={() => setIsImageZoomed(false)}
+              className="absolute -right-2 -top-2 w-9 h-9 rounded-full bg-stone-900 text-white border border-amber-300 shadow-lg hover:bg-stone-700 cursor-pointer"
+              aria-label="Đóng ảnh phóng to"
+              title="Đóng (Esc)"
+            >
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Bottom Action Area (Compact) */}
       <div className="pt-2 border-t border-amber-800/30 shrink-0 space-y-2">

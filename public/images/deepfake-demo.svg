@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="240" viewBox="0 0 800 240">
+  <rect width="800" height="240" rx="20" fill="#1c1917"/>
+  <rect x="40" y="30" width="300" height="180" rx="14" fill="#292524" stroke="#fbbf24" stroke-width="3"/>
+  <circle cx="160" cy="98" r="35" fill="#fcd34d"/>
+  <path d="M100 185c0-66 120-66 120 0" fill="#fcd34d"/>
+  <path d="m260 85 40 25-40 25z" fill="#fafaf9"/>
+  <text x="395" y="75" fill="#fbbf24" font-family="sans-serif" font-size="26" font-weight="bold">DEEPFAKE</text>
+  <text x="395" y="113" fill="#fafaf9" font-family="sans-serif" font-size="20">VIDEO + AUDIO</text>
+  <path d="M395 165h25l10-25 15 50 15-65 15 80 15-60 15 40 10-20h30l10-25 15 50 15-65 15 80 15-60 15 40 10-20h30" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linejoin="round"/>
+</svg>

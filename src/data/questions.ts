@@ -17,6 +17,7 @@ export const INITIAL_QUESTIONS: Question[] = [
   },
   {
     id: 2,
+    imageUrl: "/images/deepfake-demo.svg",
     question:
       " Công nghệ Deepfake đã tác động và đánh lừa trực tiếp vào yếu tố nào trong nhận thức của con người?",
     options: [
@@ -63,6 +64,7 @@ export const INITIAL_QUESTIONS: Question[] = [
   },
   {
     id: 6,
+    imageUrl: "/images/image6.jpg",
     question:
       "Gợi ý của MC: 'Cụm từ gồm 4 từ (15 chữ cái): Đây là giai đoạn nhận thức mở đầu giúp con người thu nhận thông tin qua giác quan, nhưng nếu chỉ dừng ở đây thì rất dễ sập bẫy công nghệ!'",
     correct_text: "NHẬN THỨC CẢM TÍNH",
@@ -71,8 +73,9 @@ export const INITIAL_QUESTIONS: Question[] = [
   },
   {
     id: 7,
+    imageUrl: "images/image7.png",
     question:
-      "⚙️ (Bánh răng sản xuất) + 🥾 (Đôi giày thực địa) + 📞 (Gọi điện xác minh trực tiếp)\nGợi ý của MC: 'Từ khóa gồm 2 từ (8 chữ cái): Toàn bộ hoạt động vật chất có mục đích của con người, giữ vai trò làm thước đo kiểm tra xem thông tin là thật hay giả!'",
+      "Gợi ý của MC: 'Từ khóa gồm 2 từ (8 chữ cái): Toàn bộ hoạt động vật chất có mục đích, mang tính lịch sử - xã hội của con người; đây là cơ sở và tiêu chuẩn để kiểm nghiệm nhận thức đúng hay sai.'",
     correct_text: "THỰC TIỄN",
     explain:
       "Muốn giải mã Deepfake phải đưa vào kiểm nghiệm thực tiễn (như gọi điện thoại trực tiếp qua kênh chính thức hoặc đối soát quy trình tài chính).",
@@ -179,6 +182,7 @@ export const INITIAL_QUESTIONS: Question[] = [
   },
   {
     id: 17,
+    imageUrl: "images/image17.jpg",
     question:
       "Gợi ý của MC: 'Hai từ chỉ những căn cứ được dùng để xác nhận hoặc bác bỏ một nhận định.'",
     correct_text: "BẰNG CHỨNG",

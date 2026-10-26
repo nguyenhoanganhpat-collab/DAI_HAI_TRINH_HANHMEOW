@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Team } from '../types';
-import { sounds } from '../utils/audio';
+import React, { useState } from "react";
+import { Team } from "../types";
+import { sounds } from "../utils/audio";
 
 interface Props {
   initialTeams: Team[];
@@ -12,10 +12,26 @@ interface Props {
 }
 
 const EMOJI_OPTIONS = [
-  '🏴‍☠️', '🚢', '⚓', '🐙', '👑', 
-  '🦈', '🦜', '🧭', '⚔️', '🗺️', 
-  '🐳', '⛵', '🏝️', '🪙', '🦁',
-  '🦅', '⚡', '🔥', '🛡️', '🧜'
+  "🏴‍☠️",
+  "🚢",
+  "⚓",
+  "🐙",
+  "👑",
+  "🦈",
+  "🦜",
+  "🧭",
+  "⚔️",
+  "🗺️",
+  "🐳",
+  "⛵",
+  "🏝️",
+  "🪙",
+  "🦁",
+  "🦅",
+  "⚡",
+  "🔥",
+  "🛡️",
+  "🧜",
 ];
 
 export const ScreenTeamSetup: React.FC<Props> = ({
@@ -27,7 +43,9 @@ export const ScreenTeamSetup: React.FC<Props> = ({
   onBack,
 }) => {
   const [teams, setTeams] = useState<Team[]>(initialTeams);
-  const [activeEmojiPickerIndex, setActiveEmojiPickerIndex] = useState<number | null>(null);
+  const [activeEmojiPickerIndex, setActiveEmojiPickerIndex] = useState<
+    number | null
+  >(null);
 
   const handleNameChange = (index: number, name: string) => {
     const updated = [...teams];
@@ -51,7 +69,10 @@ export const ScreenTeamSetup: React.FC<Props> = ({
     // Add next team from palette at the end
     const nextPaletteTeam = fullPalette[teams.length];
     if (nextPaletteTeam) {
-      setTeams((prev) => [...prev, { ...nextPaletteTeam, position: 0, score: 0 }]);
+      setTeams((prev) => [
+        ...prev,
+        { ...nextPaletteTeam, position: 0, score: 0 },
+      ]);
     }
     sounds.playFlip();
   };
@@ -73,18 +94,24 @@ export const ScreenTeamSetup: React.FC<Props> = ({
 
   // Dynamic grid: auto-adjust columns based on team count
   const gridCols =
-    teams.length <= 2 ? 'grid-cols-1 sm:grid-cols-2' :
-    teams.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
-    teams.length === 4 ? 'grid-cols-2 md:grid-cols-4' :
-    teams.length <= 6 ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6' :
-    'grid-cols-2 md:grid-cols-4';
+    teams.length <= 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : teams.length === 3
+        ? "grid-cols-1 sm:grid-cols-3"
+        : teams.length === 4
+          ? "grid-cols-2 md:grid-cols-4"
+          : teams.length <= 6
+            ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
+            : "grid-cols-2 md:grid-cols-4";
 
   return (
     <div className="relative min-h-screen w-full flex flex-col justify-between overflow-x-hidden bg-stone-950 text-amber-50">
       {/* Background Map Image with Vintage Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center opacity-25 filter sepia contrast-125 fixed"
-        style={{ backgroundImage: `url('/assets/aistudio/world_map_f1bc5d20.png')` }}
+        style={{
+          backgroundImage: `url('/assets/aistudio/world_map_f1bc5d20.png')`,
+        }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-stone-950/85 via-amber-950/50 to-stone-950/95 pointer-events-none fixed" />
 
@@ -147,13 +174,15 @@ export const ScreenTeamSetup: React.FC<Props> = ({
             +
           </button>
 
-          <span className="text-[10px] text-stone-400 font-medium">(2 – 8 đội)</span>
+          <span className="text-[10px] text-stone-400 font-medium">
+            (2 – 8 đội)
+          </span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className={`grid gap-3 ${gridCols}`}>
             {teams.map((team, idx) => (
-              <div 
+              <div
                 key={team.id}
                 className="relative bg-stone-900/90 border-2 rounded-xl p-4 shadow-xl backdrop-blur-md transition-all hover:scale-[1.02] flex flex-col justify-between"
                 style={{ borderColor: team.color }}
@@ -163,7 +192,7 @@ export const ScreenTeamSetup: React.FC<Props> = ({
                   <span className="text-xs font-cinzel font-bold text-amber-400/90 tracking-wider">
                     ĐỘI {idx + 1}
                   </span>
-                  <span 
+                  <span
                     className="w-3 h-3 rounded-full border border-white/40 shadow-sm"
                     style={{ backgroundColor: team.color }}
                   />
@@ -173,7 +202,11 @@ export const ScreenTeamSetup: React.FC<Props> = ({
                 <div className="relative mb-4 flex flex-col items-center">
                   <button
                     type="button"
-                    onClick={() => setActiveEmojiPickerIndex(activeEmojiPickerIndex === idx ? null : idx)}
+                    onClick={() =>
+                      setActiveEmojiPickerIndex(
+                        activeEmojiPickerIndex === idx ? null : idx,
+                      )
+                    }
                     className="w-16 h-16 rounded-2xl border-2 border-dashed border-amber-500/50 bg-stone-950/70 hover:bg-stone-800 flex items-center justify-center text-3xl shadow-inner transition-transform hover:scale-110 active:scale-95"
                     title="Nhấn để đổi Emoji"
                   >
@@ -192,7 +225,9 @@ export const ScreenTeamSetup: React.FC<Props> = ({
                           type="button"
                           onClick={() => handleEmojiSelect(idx, em)}
                           className={`w-9 h-9 flex items-center justify-center text-xl rounded-lg hover:bg-amber-900/40 transition-colors ${
-                            team.emoji === em ? 'bg-amber-500/20 ring-1 ring-amber-400' : ''
+                            team.emoji === em
+                              ? "bg-amber-500/20 ring-1 ring-amber-400"
+                              : ""
                           }`}
                         >
                           {em}
@@ -237,7 +272,8 @@ export const ScreenTeamSetup: React.FC<Props> = ({
 
       {/* Footer Info */}
       <footer className="relative z-10 py-3 text-center text-xs text-amber-400/50 border-t border-amber-950/80 bg-stone-950/70">
-        Hãy phân chia vị trí và chọn người đại diện mỗi đội trước khi chính thức ra khơi
+        Hãy phân chia vị trí và chọn người đại diện mỗi đội trước khi chính thức
+        ra khơi
       </footer>
     </div>
   );
