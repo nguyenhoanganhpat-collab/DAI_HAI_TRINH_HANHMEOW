@@ -99,6 +99,14 @@ export const ScreenMainArena: React.FC<Props> = ({
     }
   };
 
+  const handleSkipTurn = () => {
+    setIsTarotOpen(false);
+    showToast(`${activeTeam.name} trả lời sai và đứng im trong lượt này.`);
+    setActiveTeamIndex((prev) => (prev + 1) % teams.length);
+    setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
+    sounds.playShipBell();
+  };
+
   // Fullscreen toggle for presentation mode
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -302,6 +310,7 @@ export const ScreenMainArena: React.FC<Props> = ({
             onNextQuestion={handleNextQuestion}
             onPrevQuestion={handlePrevQuestion}
             onOpenTarot={() => setIsTarotOpen(true)}
+            onSkipTurn={handleSkipTurn}
             onSelectQuestion={(idx) => setCurrentQuestionIndex(idx)}
           />
         </div>

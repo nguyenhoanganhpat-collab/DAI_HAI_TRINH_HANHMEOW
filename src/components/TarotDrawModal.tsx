@@ -240,7 +240,7 @@ export const TarotDrawModal: React.FC<Props> = ({
                 >
                   {/* Card Back Ornate Nautical Pattern */}
                   <div className="w-full h-full p-2 flex flex-col items-center justify-between border border-amber-600/30 rounded-lg bg-[radial-gradient(#b45309_1px,transparent_1px)] bg-[size:10px_10px]">
-                    <div className="text-[10px] text-amber-400/80 font-cinzel font-bold">
+                    <div className="text-base sm:text-lg text-amber-300 font-cinzel font-black bg-stone-950/70 rounded-full px-2 py-0.5 border border-amber-400/60">
                       #{idx + 1}
                     </div>
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-amber-400/40 flex items-center justify-center bg-stone-950/60 shadow-inner group-hover:rotate-45 transition-transform duration-500">

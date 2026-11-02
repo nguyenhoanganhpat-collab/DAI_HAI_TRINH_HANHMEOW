@@ -10,6 +10,7 @@ interface Props {
   onNextQuestion: () => void;
   onPrevQuestion: () => void;
   onOpenTarot: () => void;
+  onSkipTurn: () => void;
   onSelectQuestion: (index: number) => void;
 }
 
@@ -21,6 +22,7 @@ export const QuestionCard: React.FC<Props> = ({
   onNextQuestion,
   onPrevQuestion,
   onOpenTarot,
+  onSkipTurn,
 }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -95,7 +97,7 @@ export const QuestionCard: React.FC<Props> = ({
   };
 
   const startAutoTarotTransition = () => {
-    let count = 2;
+    let count = 30;
     setTarotCountdown(count);
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
 
@@ -108,7 +110,7 @@ export const QuestionCard: React.FC<Props> = ({
       } else {
         setTarotCountdown(count);
       }
-    }, 750); // ~1.5s total delay
+    }, 1000);
   };
 
   const cancelAutoTarot = () => {
@@ -138,8 +140,8 @@ export const QuestionCard: React.FC<Props> = ({
       sounds.playWrong();
     }
 
-    // Auto-transition to Tarot modal after 1.5s
-    startAutoTarotTransition();
+    // Only a correct answer earns a Tarot draw. A wrong answer keeps the team still.
+    if (correctCheck) startAutoTarotTransition();
   };
 
   const isTrueFalse =
@@ -149,6 +151,18 @@ export const QuestionCard: React.FC<Props> = ({
 
   return (
     <div className="relative parchment-card rounded-xl p-4 sm:p-5 border-2 border-amber-800/80 shadow-xl wood-frame text-stone-900 w-full h-full min-h-0 flex flex-col overflow-y-auto">
+      {isChecked && (
+        <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center">
+          <div className={`px-8 py-5 rounded-2xl border-4 shadow-2xl backdrop-blur-sm animate-in zoom-in ${isCorrect ? "bg-emerald-950/90 border-emerald-300" : "bg-rose-950/90 border-rose-300"}`}>
+            <div className={`text-4xl sm:text-6xl font-black font-cinzel tracking-wider text-center ${isCorrect ? "text-emerald-200" : "text-rose-200"}`}>
+              {isCorrect ? "CHÍNH XÁC!" : "CHƯA CHÍNH XÁC!"}
+            </div>
+            <div className="mt-2 text-center text-sm sm:text-base font-bold text-white">
+              {isCorrect ? "Được quyền bốc bài Tarot" : "Đội đứng im trong lượt này"}
+            </div>
+          </div>
+        </div>
+      )}
       {/* Top Header Row (Compact) */}
       <div className="flex items-center justify-between gap-2 pb-2 border-b border-amber-800/30 shrink-0">
         <div className="flex items-center gap-2">
@@ -413,9 +427,10 @@ export const QuestionCard: React.FC<Props> = ({
             type="button"
             onClick={() => {
               cancelAutoTarot();
-              onOpenTarot();
+              if (isChecked && isCorrect) onOpenTarot();
             }}
-            className="group px-5 py-2 rounded-xl bg-gradient-to-r from-purple-800 to-indigo-800 hover:from-purple-700 hover:to-indigo-700 text-white font-cinzel font-bold text-xs sm:text-sm tracking-wide shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-purple-400 animate-pulse"
+            disabled={!isChecked || !isCorrect}
+            className="group px-5 py-2 rounded-xl bg-gradient-to-r from-purple-800 to-indigo-800 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-cinzel font-bold text-xs sm:text-sm tracking-wide shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-purple-400 animate-pulse"
           >
             <i className="fa-solid fa-wand-magic-sparkles mr-1.5 text-yellow-300"></i>
             BỐC BÀI
@@ -448,13 +463,27 @@ export const QuestionCard: React.FC<Props> = ({
               </button>
               <button
                 type="button"
-                onClick={cancelAutoTarot}
+                onClick={() => {
+                  cancelAutoTarot();
+                  onSkipTurn();
+                }}
                 className="px-1.5 py-0.5 rounded bg-stone-800 text-stone-300 text-[11px] cursor-pointer"
               >
-                Dừng
+                Bỏ qua bốc bài
               </button>
             </div>
           </div>
+        )}
+
+        {isChecked && isCorrect === false && (
+          <button
+            type="button"
+            onClick={onSkipTurn}
+            className="w-full px-4 py-3 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-cinzel font-black text-sm shadow-lg border border-rose-300 cursor-pointer"
+          >
+            <i className="fa-solid fa-forward mr-2" />
+            BỎ QUA BỐC BÀI · KẾT THÚC LƯỢT
+          </button>
         )}
 
         {/* Detailed Explanation Box */}

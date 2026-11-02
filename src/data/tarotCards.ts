@@ -117,7 +117,7 @@ export function getPhaseWeightedCardPool(
   } else if (questionNumber <= 11) {
     // Phase 2a (Câu 8-11): ~30% Advance — Sóng gió bùng phát
     // Card 7 "Tất cả về vị trí xuất phát" CHỈ ĐƯỢC XUẤT HIỆN DUY NHẤT 1 LẦN (cửa sổ câu 9-11)
-    const canIncludeReset = !hasResetAllOccurred && questionNumber >= 9 && questionNumber <= 11;
+    const canIncludeReset = !hasResetAllOccurred && questionNumber >= 9 && questionNumber <= 11 && questionNumber < 19;
 
     if (canIncludeReset) {
       // Có reset_all: 2x tiến + 1x đứng im + 2x lùi1 + 2x lùi2 + 1x challenge + 1x đứng im + 1x reset
@@ -134,7 +134,7 @@ export function getPhaseWeightedCardPool(
 
   } else {
     // Phase 3 (Câu 15-20): Kịch tính về đích — Attack, Boost last, Retreat 2, Advance 2
-    pool = [c8, c8, c9, c9, c4, c4, c1, c1, c2, c10];
+    pool = [c8, c8, c8, c9, c9, c4, c4, c1, c1, c2];
   }
 
   // Fisher-Yates shuffle the 10 mystery cards
